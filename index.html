@@ -1,776 +1,184 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rehman Döner Kebab</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#100e0c">
+  <title>Rehman Döner Kebab · A Coruña</title>
+  <meta name="description" content="Pide online en Rehman Döner Kebab, A Coruña. Kebab, durum, lahmacun, platos y más. Todos los días de 13:00 a 16:00 y de 19:00 a 23:30.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body class="antialiased overflow-x-hidden relative pb-20 md:pb-0"> 
+<body>
 
-    <!-- Desktop Navigation -->
-    <nav class="hidden md:block fixed w-full z-40 bg-black/90 backdrop-blur-md border-b border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="showPage('home')">
-                    <h1 class="text-3xl font-bold title-font tracking-wider text-white">
-                        REHMAN <span class="text-theme-yellow">DÖNER KEBAB</span>
-                    </h1>
-                </div>
-                <div class="flex ml-10 space-x-8">
-                    <button onclick="showPage('home')" id="nav-desktop-home" class="text-theme-red px-3 py-2 text-lg font-medium transition-colors border-b-2 border-theme-red">Inicio</button>
-                    <button onclick="showPage('menu')" id="nav-desktop-menu" class="text-white hover:text-theme-red px-3 py-2 text-lg font-medium transition-colors border-b-2 border-transparent">La Carta</button>
-                </div>
-                <div class="flex items-center gap-4">
-                    <button onclick="toggleCart()" class="relative text-white hover:text-theme-red transition-colors flex items-center gap-2 bg-gray-900 px-4 py-2 rounded-full border border-gray-700">
-                        <i class="fas fa-shopping-cart text-xl"></i>
-                        <span>Mi Pedido</span>
-                        <span id="cart-badge-desktop" class="bg-theme-red text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center hidden">0</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Mobile Top Header -->
-    <header class="md:hidden fixed top-0 w-full z-40 bg-black/95 border-b border-gray-800 p-4 text-center">
-        <h1 class="text-2xl font-bold title-font tracking-wider text-white">
-            REHMAN <span class="text-theme-yellow">DÖNER KEBAB</span>
-        </h1>
-    </header>
-
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="md:hidden fixed bottom-0 w-full z-40 bg-black border-t border-gray-800 pb-safe">
-        <div class="flex justify-around items-center h-16">
-            <button onclick="showPage('home')" id="nav-mobile-home" class="flex flex-col items-center w-full py-2 text-theme-red">
-                <i class="fas fa-home text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase">Inicio</span>
-            </button>
-            <button onclick="showPage('menu')" id="nav-mobile-menu" class="flex flex-col items-center w-full py-2 text-gray-400">
-                <i class="fas fa-utensils text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase">Carta</span>
-            </button>
-            <button onclick="toggleCart()" class="flex flex-col items-center w-full py-2 text-gray-400 relative">
-                <div class="relative">
-                    <i class="fas fa-shopping-bag text-xl mb-1"></i>
-                    <span id="cart-badge-mobile" class="absolute -top-2 -right-3 bg-theme-red text-white text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center hidden">0</span>
-                </div>
-                <span class="text-[10px] font-bold uppercase">Carrito</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Customization Modal -->
-    <div id="custom-modal-overlay" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-[#1a1a1a] border border-gray-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl transform transition-all">
-            <div class="p-4 border-b border-gray-800 flex justify-between items-center bg-black">
-                <h3 id="modal-title" class="font-bold text-xl text-white title-font">Nombre del Producto</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div class="p-5 space-y-5 max-h-[60vh] overflow-y-auto">
-                
-                <!-- Dynamic Meat Selection -->
-                <div id="modal-meat-section" class="space-y-3">
-                    <!-- Javascript will inject dropdowns here -->
-                </div>
-
-                <!-- Extras Section -->
-                <div id="modal-extras-section" class="space-y-3 pt-3 border-t border-gray-800">
-                    <h4 class="text-theme-yellow font-bold text-sm uppercase tracking-wider">Extras</h4>
-                    <label class="flex items-center justify-between bg-[#111] border border-gray-800 p-3 rounded-xl cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" id="extra-queso" class="w-5 h-5 accent-theme-red">
-                            <span class="text-sm font-semibold">Añadir Extra Queso</span>
-                        </div>
-                        <span class="text-theme-yellow font-bold">+0.50€</span>
-                    </label>
-                    <label class="flex items-center justify-between bg-[#111] border border-gray-800 p-3 rounded-xl cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" id="extra-carne" class="w-5 h-5 accent-theme-red">
-                            <span class="text-sm font-semibold">Añadir Extra Carne</span>
-                        </div>
-                        <span class="text-theme-yellow font-bold">+1.00€</span>
-                    </label>
-                </div>
-
-                <!-- Notes Section -->
-                <div class="pt-3 border-t border-gray-800">
-                    <h4 class="text-theme-yellow font-bold text-sm uppercase tracking-wider mb-2">Instrucciones Especiales</h4>
-                    <textarea id="modal-note" rows="2" placeholder="Ej. Sin cebolla, o solo queso en un kebab..." class="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-theme-red"></textarea>
-                </div>
-            </div>
-            <div class="p-4 bg-black border-t border-gray-800">
-                <button onclick="confirmCustomization()" class="w-full bg-theme-red hover:bg-red-700 text-white py-3 rounded-xl font-bold flex justify-between items-center px-6 transition-transform active:scale-95">
-                    <span>Añadir al Carrito</span>
-                    <span id="modal-price" class="font-bold text-lg">0.00€</span>
-                </button>
-            </div>
-        </div>
+  <!-- CABECERA -->
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="#top" aria-label="Rehman Döner Kebab">Rehman <em>Döner Kebab</em></a>
+      <p id="status" class="status"><i class="dot"></i><span>Cargando…</span></p>
     </div>
+    <nav class="pills" id="pills" aria-label="Categorías"></nav>
+  </header>
 
-    <!-- Cart Overlay & Sidebar -->
-    <div id="cart-overlay" class="fixed inset-0 bg-black/70 z-40 hidden" onclick="toggleCart()"></div>
-    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-[450px] bg-[#1a1a1a] z-50 cart-closed shadow-2xl flex flex-col border-l border-gray-800">
-        <div class="p-4 border-b border-gray-800 flex justify-between items-center bg-black pt-safe">
-            <h2 class="text-2xl font-bold title-font text-white"><i class="fas fa-shopping-bag text-theme-red mr-2"></i>Tu Pedido</h2>
-            <button onclick="toggleCart()" class="text-gray-400 hover:text-white text-3xl p-2">&times;</button>
-        </div>
-        
-        <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
-            <div class="text-center text-gray-500 mt-10">Tu carrito está vacío</div>
-        </div>
-
-        <div class="p-4 border-t border-gray-800 bg-black space-y-4 max-h-[60vh] overflow-y-auto pb-safe">
-            
-            <!-- Extra Sauces Section -->
-            <div class="bg-[#111] p-3 rounded-xl border border-gray-800">
-                <h3 class="text-theme-yellow font-bold text-sm uppercase mb-3">Tarrinas de Salsa Extra (+0,50€/ud)</h3>
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center text-sm">
-                        <span>Salsa Blanca</span>
-                        <div class="flex items-center gap-3">
-                            <button onclick="updateSauce('blanca', -1)" class="w-7 h-7 bg-gray-800 rounded text-white flex items-center justify-center"><i class="fas fa-minus text-xs"></i></button>
-                            <span id="sauce-blanca-qty" class="w-3 text-center font-bold">0</span>
-                            <button onclick="updateSauce('blanca', 1)" class="w-7 h-7 bg-gray-800 rounded text-white flex items-center justify-center active:bg-theme-red"><i class="fas fa-plus text-xs"></i></button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <span>Salsa Roja</span>
-                        <div class="flex items-center gap-3">
-                            <button onclick="updateSauce('roja', -1)" class="w-7 h-7 bg-gray-800 rounded text-white flex items-center justify-center"><i class="fas fa-minus text-xs"></i></button>
-                            <span id="sauce-roja-qty" class="w-3 text-center font-bold">0</span>
-                            <button onclick="updateSauce('roja', 1)" class="w-7 h-7 bg-gray-800 rounded text-white flex items-center justify-center active:bg-theme-red"><i class="fas fa-plus text-xs"></i></button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <span>Salsa Picante</span>
-                        <div class="flex items-center gap-3">
-                            <button onclick="updateSauce('picante', -1)" class="w-7 h-7 bg-gray-800 rounded text-white flex items-center justify-center"><i class="fas fa-minus text-xs"></i></button>
-                            <span id="sauce-picante-qty" class="w-3 text-center font-bold">0</span>
-                            <button onclick="updateSauce('picante', 1)" class="w-7 h-7 bg-gray-800 rounded text-white flex items-center justify-center active:bg-theme-red"><i class="fas fa-plus text-xs"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Checkout Form -->
-            <div class="space-y-3">
-                <h3 class="font-bold text-theme-yellow title-font text-lg">Datos de Envío</h3>
-                <input type="text" id="c-name" placeholder="Tu Nombre" class="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-theme-red">
-                <input type="text" id="c-address" placeholder="Dirección (Piso, Puerta...)" class="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-theme-red">
-                <input type="tel" id="c-phone" placeholder="Teléfono" class="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-theme-red">
-            </div>
-
-            <div class="space-y-3 pt-2">
-                <h3 class="font-bold text-theme-yellow title-font text-lg">Método de Pago</h3>
-                <select id="c-payment" onchange="handlePaymentChange()" class="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-theme-red appearance-none">
-                    <option value="efectivo">En Efectivo (al repartidor)</option>
-                    <option value="tarjeta">Tarjeta (El repartidor lleva datáfono)</option>
-                </select>
-                
-                <div id="cash-options" class="space-y-3">
-                    <select id="c-exact" onchange="handleCashChange()" class="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-theme-red appearance-none">
-                        <option value="si">Tengo el importe exacto</option>
-                        <option value="no">Necesito cambio</option>
-                    </select>
-                    <div id="change-input-div" class="hidden">
-                        <input type="number" id="c-change" placeholder="¿De cuánto es el billete? (Ej. 50)" class="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-theme-red">
-                    </div>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-700 pt-3">
-                <div class="flex justify-between text-gray-400 mb-1">
-                    <span>Subtotal Productos:</span><span id="cart-subtotal">0.00€</span>
-                </div>
-                <div class="flex justify-between text-gray-400 mb-2">
-                    <span>Envío:</span><span>2.00€</span>
-                </div>
-                <div class="flex justify-between text-2xl font-bold text-white">
-                    <span>Total:</span><span id="cart-total" class="text-theme-yellow">0.00€</span>
-                </div>
-                <p class="text-xs text-theme-red text-center mt-2">* Pedido mínimo 10€</p>
-            </div>
-
-            <button onclick="sendOrderViaWhatsApp()" class="w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors text-lg active:scale-95">
-                <i class="fab fa-whatsapp text-2xl"></i> Finalizar Pedido
-            </button>
-        </div>
+  <!-- PORTADA -->
+  <section class="hero" id="top">
+    <div class="hero-bg"></div>
+    <div class="wrap hero-inner">
+      <p class="eyebrow">A Coruña · Cocina turca a domicilio</p>
+      <h1>Rehman<br><em>Döner Kebab</em></h1>
+      <p class="lead">Carne marinada, pan recién hecho y salsas de la casa. Pide desde el móvil y te lo llevamos a la puerta.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" id="heroBtn">Ver la carta</button>
+        <a class="btn-ghost" href="tel:+34881512777">Llamar</a>
+      </div>
     </div>
+  </section>
 
-    <!-- MAIN VIEW (Home) -->
-    <main id="home-view" class="pt-16 md:pt-20 fade-in">
-        <div class="relative bg-black overflow-hidden h-[60vh] flex items-center justify-center">
-            <div class="absolute inset-0 z-0">
-                <img src="fotos-menu/fondo-portada.jpg" alt="Background" class="w-full h-full object-cover opacity-30 bg-gray-900">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#111111] via-transparent to-black/50"></div>
-            </div>
-            <div class="relative z-10 text-center px-4 slide-up w-full">
-                <h1 class="text-4xl md:text-7xl font-bold title-font mb-4 uppercase tracking-widest text-white shadow-black drop-shadow-2xl">
-                    El Mejor <span class="text-theme-red">Sabor</span>
-                </h1>
-                <p class="text-md md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto px-4">
-                    Abierto todos los días de 12:00 a 00:00.<br>Servicio a domicilio disponible.
-                </p>
-                <button onclick="showPage('menu')" class="w-[90%] md:w-auto bg-theme-red hover:bg-red-700 text-white text-lg px-8 py-4 rounded-full font-bold transition-transform active:scale-95 shadow-lg shadow-red-600/30">
-                    Ver Menú y Pedir
-                </button>
-            </div>
+  <section class="wrap facts">
+    <div class="fact"><span>Horario</span><b>Todos los días</b><small>13:00 a 16:00 · 19:00 a 23:30</small></div>
+    <div class="fact"><span>Envío</span><b>2,00€</b><small>Pedido mínimo 10,00€</small></div>
+    <div class="fact"><span>Dónde estamos</span><b>Rda. de Outeiro, 224</b><small>15007 A Coruña</small></div>
+    <div class="fact"><span>Teléfono</span><b>881 512 777</b><small>613 802 925</small></div>
+  </section>
+
+  <!-- CARTA -->
+  <section class="wrap search-row">
+    <div class="search">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" type="search" placeholder="Buscar en la carta" autocomplete="off" aria-label="Buscar en la carta">
+    </div>
+  </section>
+
+  <main class="wrap" id="menu"></main>
+  <p class="empty" id="empty" hidden>No hemos encontrado nada con esa búsqueda.</p>
+
+  <footer class="footer">
+    <h3>Rehman <em>Döner Kebab</em></h3>
+    <p>Rda. de Outeiro, 224 · 15007 A Coruña</p>
+    <p>Todos los días de 13:00 a 16:00 y de 19:00 a 23:30</p>
+    <p>881 512 777 · 613 802 925</p>
+    <small>© 2026 Rehman Döner Kebab · Pago en mano: efectivo o tarjeta con datáfono</small>
+  </footer>
+
+  <!-- BARRA FLOTANTE DEL CARRITO -->
+  <div class="bar" id="bar" hidden>
+    <button id="barBtn">
+      <span class="bar-qty" id="barQty">0</span>
+      <span class="bar-label">Ver mi pedido</span>
+      <span class="bar-price" id="barPrice">0,00€</span>
+    </button>
+  </div>
+
+  <!-- HOJA: PERSONALIZAR PRODUCTO -->
+  <div class="overlay" id="sheet" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-head">
+        <div>
+          <h3 id="sheetTitle">Producto</h3>
+          <p id="sheetDesc"></p>
+        </div>
+        <button class="x" data-close="sheet" aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="sheet-body">
+        <div id="sheetUnits"></div>
+        <div id="sheetDrink" class="unit" hidden>
+          <div>
+            <div class="group-label">Elige tu bebida</div>
+            <div class="drinks" id="drinkList"></div>
+          </div>
+        </div>
+        <div id="sheetNote" class="block" hidden>
+          <h4>Nota para este producto <small>(opcional)</small></h4>
+          <textarea id="noteInput" rows="2" maxlength="140" placeholder="Ej. Sin cebolla, salsa aparte"></textarea>
+        </div>
+      </div>
+      <div class="sheet-foot">
+        <div class="stepper">
+          <button id="qMinus" aria-label="Menos">&minus;</button>
+          <b id="qVal">1</b>
+          <button id="qPlus" aria-label="Más">+</button>
+        </div>
+        <button class="btn-add" id="addBtn"><span>Añadir al pedido</span><b id="addPrice">0,00€</b></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOJA: CARRITO / CHECKOUT -->
+  <div class="overlay" id="cart" hidden>
+    <div class="sheet tall" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <div class="sheet-head">
+        <div>
+          <h3 id="cartTitle">Tu pedido</h3>
+          <p>Revisa todo antes de enviarlo por WhatsApp</p>
+        </div>
+        <button class="x" data-close="cart" aria-label="Cerrar">&times;</button>
+      </div>
+
+      <div class="sheet-body">
+        <div id="cartItems"></div>
+        <button class="link" id="clearBtn" hidden>Vaciar carrito</button>
+
+        <div class="block">
+          <h4>Salsas extra <small>(+0,50€ cada tarrina)</small></h4>
+          <div class="sauce"><span>Salsa blanca</span><div class="mini" data-sauce="blanca"><button data-d="-1">&minus;</button><b>0</b><button data-d="1">+</button></div></div>
+          <div class="sauce"><span>Salsa roja</span><div class="mini" data-sauce="roja"><button data-d="-1">&minus;</button><b>0</b><button data-d="1">+</button></div></div>
+          <div class="sauce"><span>Salsa picante</span><div class="mini" data-sauce="picante"><button data-d="-1">&minus;</button><b>0</b><button data-d="1">+</button></div></div>
         </div>
 
-        <div class="bg-theme-red text-white py-4 px-2">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-around items-center text-center gap-3">
-                <div class="flex items-center gap-2"><i class="fas fa-map-marker-alt"></i><span class="font-semibold text-sm">Rda. de Outeiro, 224, A Coruña</span></div>
-                <div class="flex items-center gap-2"><i class="fas fa-motorcycle"></i><span class="font-semibold text-sm">Pedido Mínimo 10€ (Envío 2€)</span></div>
-                <div class="flex items-center gap-2"><i class="fas fa-phone-alt"></i><span class="font-semibold text-sm">881 512 777 / 613 802 925</span></div>
-            </div>
+        <div class="block">
+          <h4>Datos de entrega</h4>
+          <input id="cName" type="text" placeholder="Nombre" autocomplete="name">
+          <input id="cAddress" type="text" placeholder="Dirección (calle, número, piso, puerta)" autocomplete="street-address">
+          <input id="cPhone" type="tel" placeholder="Teléfono de contacto" autocomplete="tel" inputmode="tel">
         </div>
 
-        <!-- Novedades -->
-        <div class="max-w-7xl mx-auto px-4 py-12 slide-up" style="animation-delay: 0.2s;">
-            <div class="text-center mb-8">
-                <span class="text-theme-yellow font-bold tracking-wider uppercase text-sm">Lo Más Nuevo</span>
-                <h2 class="text-3xl md:text-5xl font-bold title-font text-white mt-1">Novedades Especiales</h2>
-                <div class="w-12 h-1 bg-theme-red mx-auto mt-4"></div>
+        <div class="block">
+          <h4>Método de pago <small>(se paga al repartidor)</small></h4>
+          <div class="seg" id="payType">
+            <button class="on" data-v="efectivo">Efectivo</button>
+            <button data-v="tarjeta">Tarjeta</button>
+          </div>
+          <p class="hint" id="cardHint" hidden>El repartidor llevará el datáfono.</p>
+          <div id="cashBox">
+            <div class="seg" id="exactType">
+              <button class="on" data-v="si">Importe exacto</button>
+              <button data-v="no">Necesito cambio</button>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                <div class="menu-card rounded-2xl overflow-hidden flex flex-col group">
-                    <div class="relative h-48 overflow-hidden bg-gray-900">
-                        <img src="fotos-menu/tacos-frances.jpg" alt="Tacos Frances" class="w-full h-full object-cover">
-                        <div class="absolute top-3 right-3 bg-theme-red text-white px-3 py-1 rounded-full font-bold text-xs title-font shadow-lg">¡NUEVO!</div>
-                    </div>
-                    <div class="p-5 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h3 class="text-xl font-bold title-font mb-1">Tacos Francés</h3>
-                            <p class="text-gray-400 text-xs mb-4">Tacos de Pollo Casero con patatas y salsa integrada.</p>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold text-theme-yellow title-font">9,00€</span>
-                            <button onclick="addDirectItem('Tacos Francés', 9.00)" class="bg-theme-red active:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2">
-                                Añadir <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="menu-card rounded-2xl overflow-hidden flex flex-col group">
-                    <div class="relative h-48 overflow-hidden bg-gray-900">
-                        <img src="fotos-menu/menu-tacos.jpg" alt="Menú Tacos Frances" class="w-full h-full object-cover">
-                        <div class="absolute top-3 right-3 bg-theme-red text-white px-3 py-1 rounded-full font-bold text-xs title-font shadow-lg">¡MENÚ!</div>
-                    </div>
-                    <div class="p-5 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h3 class="text-xl font-bold title-font mb-1">Menú Tacos Francés</h3>
-                            <p class="text-gray-400 text-xs mb-4">Tacos de Pollo Casero, Patatas, Salsa + Lata.</p>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold text-theme-yellow title-font">12,00€</span>
-                            <button onclick="addDirectItem('Menú Tacos Francés', 12.00)" class="bg-theme-red active:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2">
-                                Añadir <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div id="changeBox" hidden>
+              <input id="cChange" type="number" min="0" step="1" inputmode="decimal" placeholder="¿Con cuánto pagas? (ej. 20, 50)">
             </div>
-        </div>
-    </main>
-
-    <!-- MENU VIEW -->
-    <main id="menu-view" class="pt-20 md:pt-28 pb-10 hidden fade-in max-w-7xl mx-auto px-4">
-        <div class="text-center mb-8">
-            <h2 class="text-4xl md:text-5xl font-bold title-font text-theme-red uppercase">Nuestra Carta</h2>
-            <div class="w-12 h-1 bg-theme-yellow mx-auto mt-3"></div>
+          </div>
         </div>
 
-        <!-- Section: Ofertas Especiales -->
-        <section class="mb-10">
-            <h3 class="text-2xl font-bold title-font text-white mb-4 border-b border-gray-800 pb-2">Ofertas Especiales</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                
-                <div class="bg-[#1a1a1a] rounded-xl border border-[#333] overflow-hidden flex flex-col active:border-theme-red transition-colors cursor-pointer" onclick="openModal('OFERTA 1', 20.00, 'oferta', 3)">
-                    <img src="fotos-menu/oferta-1.jpg" alt="Oferta 1" class="w-full h-32 object-cover bg-gray-900">
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-theme-red mb-1">OFERTA 1</h4>
-                            <p class="text-[11px] text-gray-400 leading-tight">3 Kebab, 1 Patata, 1 Cola 1.25L</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-theme-yellow font-bold title-font text-xl">20,00€</span>
-                            <button class="w-8 h-8 bg-gray-800 rounded-md flex items-center justify-center text-white"><i class="fas fa-plus text-sm"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-[#1a1a1a] rounded-xl border border-[#333] overflow-hidden flex flex-col active:border-theme-red transition-colors cursor-pointer" onclick="openModal('OFERTA 2', 14.00, 'oferta', 2)">
-                    <img src="fotos-menu/oferta-2.jpg" alt="Oferta 2" class="w-full h-32 object-cover bg-gray-900">
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-theme-red mb-1">OFERTA 2</h4>
-                            <p class="text-[11px] text-gray-400 leading-tight">2 Platos, 1 Cola 1.25L</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-theme-yellow font-bold title-font text-xl">14,00€</span>
-                            <button class="w-8 h-8 bg-gray-800 rounded-md flex items-center justify-center text-white"><i class="fas fa-plus text-sm"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-[#1a1a1a] rounded-xl border border-[#333] overflow-hidden flex flex-col active:border-theme-red transition-colors cursor-pointer" onclick="openModal('OFERTA 3', 15.00, 'oferta', 2)">
-                    <img src="fotos-menu/oferta-3.jpg" alt="Oferta 3" class="w-full h-32 object-cover bg-gray-900">
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-theme-red mb-1">OFERTA 3</h4>
-                            <p class="text-[11px] text-gray-400 leading-tight">2 Durum, 1 Patata, 1 Cola 1.25L</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-theme-yellow font-bold title-font text-xl">15,00€</span>
-                            <button class="w-8 h-8 bg-gray-800 rounded-md flex items-center justify-center text-white"><i class="fas fa-plus text-sm"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-[#1a1a1a] rounded-xl border border-[#333] overflow-hidden flex flex-col active:border-theme-red transition-colors cursor-pointer" onclick="openModal('OFERTA 4', 24.00, 'oferta', 4)">
-                    <img src="fotos-menu/oferta-4.jpg" alt="Oferta 4" class="w-full h-32 object-cover bg-gray-900">
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-theme-red mb-1">OFERTA 4</h4>
-                            <p class="text-[11px] text-gray-400 leading-tight">4 Durum, 1 Patata, 1 Cola 1.25L</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-theme-yellow font-bold title-font text-xl">24,00€</span>
-                            <button class="w-8 h-8 bg-gray-800 rounded-md flex items-center justify-center text-white"><i class="fas fa-plus text-sm"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-[#1a1a1a] rounded-xl border border-[#333] overflow-hidden flex flex-col active:border-theme-red transition-colors cursor-pointer" onclick="openModal('OFERTA 5', 23.00, 'oferta', 3)">
-                    <img src="fotos-menu/oferta-5.jpg" alt="Oferta 5" class="w-full h-32 object-cover bg-gray-900">
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-theme-red mb-1">OFERTA 5</h4>
-                            <p class="text-[11px] text-gray-400 leading-tight">3 Durum, 1 Patata, 1 Cola 1.25L</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-theme-yellow font-bold title-font text-xl">23,00€</span>
-                            <button class="w-8 h-8 bg-gray-800 rounded-md flex items-center justify-center text-white"><i class="fas fa-plus text-sm"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Oferta 6: Hamburguesas, no meat selection -->
-                <div class="bg-[#1a1a1a] rounded-xl border border-[#333] overflow-hidden flex flex-col active:border-theme-red transition-colors cursor-pointer" onclick="addDirectItem('OFERTA 6 (3 Hamburguesas, 1 Patata, 1 Cola)', 14.00)">
-                    <img src="fotos-menu/oferta-6.jpg" alt="Oferta 6" class="w-full h-32 object-cover bg-gray-900">
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-theme-red mb-1">OFERTA 6</h4>
-                            <p class="text-[11px] text-gray-400 leading-tight">3 Hamburguesas, 1 Patata, 1 Cola 1.25L</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-theme-yellow font-bold title-font text-xl">14,00€</span>
-                            <button class="w-8 h-8 bg-gray-800 rounded-md flex items-center justify-center text-white"><i class="fas fa-plus text-sm"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-[#1a1a1a] rounded-xl border border-[#333] overflow-hidden flex flex-col active:border-theme-red transition-colors cursor-pointer" onclick="openModal('OFERTA 7', 24.00, 'oferta', 3)">
-                    <img src="fotos-menu/oferta-7.jpg" alt="Oferta 7" class="w-full h-32 object-cover bg-gray-900">
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-theme-red mb-1">OFERTA 7</h4>
-                            <p class="text-[11px] text-gray-400 leading-tight">3 Kebab, Alitas (6), 1 Pat, 1 Cola</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-theme-yellow font-bold title-font text-xl">24,00€</span>
-                            <button class="w-8 h-8 bg-gray-800 rounded-md flex items-center justify-center text-white"><i class="fas fa-plus text-sm"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-[#1a1a1a] rounded-xl border border-[#333] overflow-hidden flex flex-col active:border-theme-red transition-colors cursor-pointer" onclick="openModal('OFERTA 8', 24.00, 'oferta', 4)">
-                    <img src="fotos-menu/oferta-8.jpg" alt="Oferta 8" class="w-full h-32 object-cover bg-gray-900">
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-theme-red mb-1">OFERTA 8</h4>
-                            <p class="text-[11px] text-gray-400 leading-tight">4 Kebab, 1 Patata, 1 Cola 1.25L</p>
-                        </div>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-theme-yellow font-bold title-font text-xl">24,00€</span>
-                            <button class="w-8 h-8 bg-gray-800 rounded-md flex items-center justify-center text-white"><i class="fas fa-plus text-sm"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section: Menús Completos -->
-        <section class="mb-10">
-            <h3 class="text-2xl font-bold title-font text-white mb-4 border-b border-gray-800 pb-2">Menús Completos</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
-                <div class="bg-[#1a1a1a] p-3 rounded-xl border-l-4 border-l-theme-red flex items-center cursor-pointer active:bg-gray-900" onclick="openModal('Menu Kebab', 7.50, 'kebab')">
-                    <img src="fotos-menu/menu-9.jpg" alt="Menu 9" class="w-16 h-16 rounded-lg object-cover mr-4 bg-gray-800">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm">9. MENU KEBAB</h4>
-                        <p class="text-[10px] text-gray-400 mt-1 mb-1">+ Patatas + Lata (Pollo/Ternera/Mixto)</p>
-                        <span class="text-theme-yellow font-bold title-font text-lg">7,50€</span>
-                    </div>
-                    <button class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-plus"></i></button>
-                </div>
-
-                <div class="bg-[#1a1a1a] p-3 rounded-xl border-l-4 border-l-theme-red flex items-center cursor-pointer active:bg-gray-900" onclick="openModal('Menu Durum', 8.00, 'kebab')">
-                    <img src="fotos-menu/menu-10.jpg" alt="Menu 10" class="w-16 h-16 rounded-lg object-cover mr-4 bg-gray-800">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm">10. MENU DURUM</h4>
-                        <p class="text-[10px] text-gray-400 mt-1 mb-1">+ Patatas + Lata (Pollo/Ternera/Mixto)</p>
-                        <span class="text-theme-yellow font-bold title-font text-lg">8,00€</span>
-                    </div>
-                    <button class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-plus"></i></button>
-                </div>
-
-                <div class="bg-[#1a1a1a] p-3 rounded-xl border-l-4 border-l-theme-red flex items-center cursor-pointer active:bg-gray-900" onclick="openModal('Menu Lahmacun', 8.50, 'kebab')">
-                    <img src="fotos-menu/menu-11.jpg" alt="Menu 11" class="w-16 h-16 rounded-lg object-cover mr-4 bg-gray-800">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm">11. MENU LAHMACUN</h4>
-                        <p class="text-[10px] text-gray-400 mt-1 mb-1">+ Patatas + Lata (Pollo/Ternera/Mixto)</p>
-                        <span class="text-theme-yellow font-bold title-font text-lg">8,50€</span>
-                    </div>
-                    <button class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-plus"></i></button>
-                </div>
-
-                <div class="bg-[#1a1a1a] p-3 rounded-xl border-l-4 border-l-theme-yellow flex items-center cursor-pointer active:bg-gray-900" onclick="addDirectItem('Menu Tacos Francés', 12.00)">
-                    <img src="fotos-menu/menu-12.jpg" alt="Menu 12" class="w-16 h-16 rounded-lg object-cover mr-4 bg-gray-800">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm">12. MENU TACOS FRANCÉS</h4>
-                        <p class="text-[10px] text-gray-400 mt-1 mb-1">Tacos Pollo, Patatas, Salsa + Lata</p>
-                        <span class="text-theme-yellow font-bold title-font text-lg">12,00€</span>
-                    </div>
-                    <button class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-plus"></i></button>
-                </div>
-
-                <div class="bg-[#1a1a1a] p-3 rounded-xl border-l-4 border-l-theme-red flex items-center cursor-pointer active:bg-gray-900" onclick="openModal('Menu Infantil', 6.50, 'kebab')">
-                    <img src="fotos-menu/menu-13.jpg" alt="Menu 13" class="w-16 h-16 rounded-lg object-cover mr-4 bg-gray-800">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm">13. MENU INFANTIL</h4>
-                        <p class="text-[10px] text-gray-400 mt-1 mb-1">+ Lata (Pollo/Ternera, Arroz/Patatas)</p>
-                        <span class="text-theme-yellow font-bold title-font text-lg">6,50€</span>
-                    </div>
-                    <button class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-plus"></i></button>
-                </div>
-
-                <div class="bg-[#1a1a1a] p-3 rounded-xl border-l-4 border-l-theme-red flex items-center cursor-pointer active:bg-gray-900" onclick="openModal('Menu Plato', 8.00, 'kebab')">
-                    <img src="fotos-menu/menu-14.jpg" alt="Menu 14" class="w-16 h-16 rounded-lg object-cover mr-4 bg-gray-800">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm">14. MENU PLATO</h4>
-                        <p class="text-[10px] text-gray-400 mt-1 mb-1">+ Lata (Pollo/Ter/Mix, Arroz/Pat, Ens)</p>
-                        <span class="text-theme-yellow font-bold title-font text-lg">8,00€</span>
-                    </div>
-                    <button class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-plus"></i></button>
-                </div>
-
-                <div class="bg-[#1a1a1a] p-3 rounded-xl border-l-4 border-l-theme-red flex items-center cursor-pointer active:bg-gray-900" onclick="openModal('Menu Hamburguesa', 6.50, 'burger')">
-                    <img src="fotos-menu/menu-15.jpg" alt="Menu 15" class="w-16 h-16 rounded-lg object-cover mr-4 bg-gray-800">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm">15. MENU HAMBURGUESA</h4>
-                        <p class="text-[10px] text-gray-400 mt-1 mb-1">+ Patatas + Lata (Hamburguesa Pollo/Queso)</p>
-                        <span class="text-theme-yellow font-bold title-font text-lg">6,50€</span>
-                    </div>
-                    <button class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-plus"></i></button>
-                </div>
-
-                <div class="bg-[#1a1a1a] p-3 rounded-xl border-l-4 border-l-theme-red flex items-center cursor-pointer active:bg-gray-900" onclick="openModal('Menu Plato Gratinado', 8.00, 'kebab')">
-                    <img src="fotos-menu/menu-16.jpg" alt="Menu 16" class="w-16 h-16 rounded-lg object-cover mr-4 bg-gray-800">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm">16. MENU PLATO QUESO GRATINADO</h4>
-                        <p class="text-[10px] text-gray-400 mt-1 mb-1">+ Lata (Patatas gratinadas, Pollo/Ter/Mix)</p>
-                        <span class="text-theme-yellow font-bold title-font text-lg">8,00€</span>
-                    </div>
-                    <button class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white"><i class="fas fa-plus"></i></button>
-                </div>
-            </div>
-        </section>
-
-        <!-- KEBAB, DURUM, LAHMACUN Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <!-- Section: Kebab -->
-            <section>
-                <div class="flex items-center mb-4 border-b border-gray-800 pb-2">
-                    <img src="fotos-menu/kebab.jpg" alt="Kebab" class="w-10 h-10 rounded-full object-cover mr-3 bg-gray-800">
-                    <h3 class="text-xl font-bold title-font text-white">Kebab</h3>
-                </div>
-                <div class="space-y-3">
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Kebab Normal', 5.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">17. Pollo, Ternera o Mixto</h4>
-                            <span class="text-theme-yellow font-bold title-font">5,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Kebab Doble', 6.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">18. Kebab Doble</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Kebab Con Queso', 5.50, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">19. Kebab Con Queso</h4>
-                            <span class="text-theme-yellow font-bold title-font">5,50€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Kebab Solo Carne y Salsa', 6.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">20. Solo Carne y Salsa</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Kebab Falafel', 4.50, 'falafel')">
-                        <div>
-                            <h4 class="font-bold text-sm">21. Kebab Falafel</h4>
-                            <span class="text-theme-yellow font-bold title-font">4,50€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Kebab French', 5.50, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">22. Kebab French</h4>
-                            <span class="text-theme-yellow font-bold title-font">5,50€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section: Durum -->
-            <section>
-                <div class="flex items-center mb-4 border-b border-gray-800 pb-2">
-                    <img src="fotos-menu/durum.jpg" alt="Durum" class="w-10 h-10 rounded-full object-cover mr-3 bg-gray-800">
-                    <h3 class="text-xl font-bold title-font text-white">Durum</h3>
-                </div>
-                <div class="space-y-3">
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Durum Normal', 6.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">23. Pollo, Ternera o Mixto</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Durum Doble', 7.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">24. Durum Doble</h4>
-                            <span class="text-theme-yellow font-bold title-font">7,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Durum Con Queso', 6.50, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">25. Durum Con Queso</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,50€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Durum Solo Carne y Salsa', 7.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">26. Solo Carne y Salsa</h4>
-                            <span class="text-theme-yellow font-bold title-font">7,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Durum Falafel', 5.50, 'falafel')">
-                        <div>
-                            <h4 class="font-bold text-sm">27. Durum Falafel</h4>
-                            <span class="text-theme-yellow font-bold title-font">5,50€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Durum French', 6.50, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">28. Durum French</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,50€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section: Lahmacun -->
-            <section>
-                <div class="flex items-center mb-4 border-b border-gray-800 pb-2">
-                    <img src="fotos-menu/lahmacun.jpg" alt="Lahmacun" class="w-10 h-10 rounded-full object-cover mr-3 bg-gray-800">
-                    <h3 class="text-xl font-bold title-font text-white">Lahmacun</h3>
-                </div>
-                <div class="space-y-3">
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Lahmacun Normal', 6.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">29. Pollo, Ternera o Mixto</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Lahmacun Doble', 6.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">30. Lahmacun Doble</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Lahmacun Con Queso', 6.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">31. Con Queso</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Lahmacun Solo Carne y Salsa', 6.00, 'kebab')">
-                        <div>
-                            <h4 class="font-bold text-sm">32. Solo Carne y Salsa</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Lahmacun Falafel', 6.00, 'falafel')">
-                        <div>
-                            <h4 class="font-bold text-sm">33. Lahmacun Falafel</h4>
-                            <span class="text-theme-yellow font-bold title-font">6,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-            </section>
+        <div class="block">
+          <h4>Nota general del pedido <small>(opcional)</small></h4>
+          <textarea id="cNote" rows="2" maxlength="250" placeholder="Ej. Llamar al llegar, el portal no tiene timbre, alergias"></textarea>
         </div>
 
-        <!-- PLATOS, RACIONES Y REFRESCOS -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-            <!-- PLATOS -->
-            <section>
-                <div class="flex items-center mb-4 border-b border-gray-800 pb-2">
-                    <img src="fotos-menu/platos.jpg" alt="Platos" class="w-10 h-10 rounded-full object-cover mr-3 bg-gray-800">
-                    <h3 class="text-xl font-bold title-font text-white">Platos</h3>
-                </div>
-                <div class="space-y-3">
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Plato Normal (46)', 6.50, 'plato')">
-                        <div class="pr-2">
-                            <h4 class="font-bold text-sm">46. Plato Pollo/Ternera/Mix/Falafel</h4>
-                            <p class="text-[11px] text-gray-400">Patatas o arroz, ensalada, salsa, pan</p>
-                            <span class="text-theme-yellow font-bold title-font">6,50€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white flex-shrink-0"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Plato Especial', 7.50, 'plato')">
-                        <div class="pr-2">
-                            <h4 class="font-bold text-sm">Plato de Pollo, Ternera o Mixto</h4>
-                            <p class="text-[11px] text-gray-400">Patatas, arroz, salsa y pan</p>
-                            <span class="text-theme-yellow font-bold title-font">7,50€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white flex-shrink-0"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-xl border border-[#333] flex justify-between items-center cursor-pointer active:border-theme-red" onclick="openModal('Plato Doble (49)', 7.00, 'plato')">
-                        <div class="pr-2">
-                            <h4 class="font-bold text-sm">49. Plato Doble</h4>
-                            <p class="text-[11px] text-gray-400">Patatas o arroz, salsa y pan</p>
-                            <span class="text-theme-yellow font-bold title-font">7,00€</span>
-                        </div>
-                        <button class="w-10 h-10 bg-gray-800 rounded-full text-white flex-shrink-0"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- RACIONES Y REFRESCOS -->
-            <section>
-                <div class="flex items-center mb-4 border-b border-gray-800 pb-2">
-                    <img src="fotos-menu/raciones.jpg" alt="Raciones" class="w-10 h-10 rounded-full object-cover mr-3 bg-gray-800">
-                    <h3 class="text-xl font-bold title-font text-white">Raciones</h3>
-                </div>
-                <div class="grid grid-cols-1 gap-2 text-sm mb-6">
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Patatas Fritas <span class="text-theme-yellow ml-2 font-bold">3,00€</span></span>
-                        <button onclick="addDirectItem('Ración Patatas', 3.00)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>35. Patatas c/ Queso <span class="text-theme-yellow ml-2 font-bold">4,00€</span></span>
-                        <button onclick="addDirectItem('Patatas c/ Queso', 4.00)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Ración de Arroz <span class="text-theme-yellow ml-2 font-bold">3,00€</span></span>
-                        <button onclick="addDirectItem('Ración de Arroz', 3.00)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Aros de Cebolla (5) <span class="text-theme-yellow ml-2 font-bold">3,50€</span></span>
-                        <button onclick="addDirectItem('Aros de Cebolla', 3.50)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Alitas c/ Patatas (6) <span class="text-theme-yellow ml-2 font-bold">6,00€</span></span>
-                        <button onclick="addDirectItem('Alitas con Patatas', 6.00)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>40. Nuggets (6) <span class="text-theme-yellow ml-2 font-bold">4,50€</span></span>
-                        <button onclick="addDirectItem('Nuggets (6)', 4.50)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Nuggets c/ Patatas <span class="text-theme-yellow ml-2 font-bold">5,50€</span></span>
-                        <button onclick="addDirectItem('Nuggets c/ Patatas', 5.50)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Hamburguesa Pollo <span class="text-theme-yellow ml-2 font-bold">4,00€</span></span>
-                        <button onclick="addDirectItem('Hamburguesa de Pollo', 4.00)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Ración Falafel (5) <span class="text-theme-yellow ml-2 font-bold">3,50€</span></span>
-                        <button onclick="addDirectItem('Ración Falafel', 3.50)" class="bg-gray-800 hover:bg-theme-red w-8 h-8 flex items-center justify-center rounded"><i class="fas fa-plus text-xs"></i></button>
-                    </div>
-                </div>
-
-                <h3 class="text-xl font-bold title-font text-white mb-4 border-b border-gray-800 pb-2">Refrescos</h3>
-                <div class="grid grid-cols-2 gap-2 text-sm">
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Latas</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-theme-yellow font-bold">2,00€</span>
-                            <button onclick="addDirectItem('Lata Refresco', 2.00)" class="bg-gray-800 hover:bg-theme-red w-6 h-6 flex items-center justify-center rounded text-xs"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Agua</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-theme-yellow font-bold">1,50€</span>
-                            <button onclick="addDirectItem('Agua', 1.50)" class="bg-gray-800 hover:bg-theme-red w-6 h-6 flex items-center justify-center rounded text-xs"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Agua 1.5L</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-theme-yellow font-bold">2,50€</span>
-                            <button onclick="addDirectItem('Agua 1.5L', 2.50)" class="bg-gray-800 hover:bg-theme-red w-6 h-6 flex items-center justify-center rounded text-xs"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]">
-                        <span>Coca Cola 1.25L</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-theme-yellow font-bold">3,50€</span>
-                            <button onclick="addDirectItem('Coca Cola 1.25L', 3.50)" class="bg-gray-800 hover:bg-theme-red w-6 h-6 flex items-center justify-center rounded text-xs"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333] col-span-2">
-                        <span>Coca Cola 2L</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-theme-yellow font-bold">4,00€</span>
-                            <button onclick="addDirectItem('Coca Cola 2L', 4.00)" class="bg-gray-800 hover:bg-theme-red w-6 h-6 flex items-center justify-center rounded text-xs"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <div class="totals">
+          <div class="min" id="minBox">
+            <div class="min-bar"><i id="minFill"></i></div>
+            <small id="minText"></small>
+          </div>
+          <div><span>Subtotal</span><b id="tSub">0,00€</b></div>
+          <div><span>Envío</span><b id="tFee">2,00€</b></div>
+          <div class="grand"><span>Total</span><b id="tTotal">0,00€</b></div>
         </div>
-    </main>
+      </div>
 
-    <!-- Custom Scripts -->
-    <script src="script.js"></script>
+      <div class="sheet-foot single">
+        <button class="btn-wa" id="sendBtn">
+          <span>Enviar pedido por WhatsApp</span><b id="sendPrice">0,00€</b>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="menu.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
