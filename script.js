@@ -7,8 +7,7 @@ const WA_NUMBER = '34613802925';
 const P = { queso: 0.50, carne: 1.00, solo: 1.00, salsa: 0.50 };
 const STORE = 'rehman-kebab-v3';
 
-const $ = (s, r = document) => r.querySelector(s);
-const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const $ = (s, r = document) => r.querySelector(s); const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const eur = n => n.toFixed(2).replace('.', ',') + '€';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const byId = id => ITEMS.find(i => i.id === id);
@@ -17,7 +16,22 @@ const catName = id => (CATS.find(c => c.id === id) || {}).name || '';
 let cart = [];
 let sauces = { blanca: 0, roja: 0, picante: 0 };
 let pay = { type: 'efectivo', exact: 'si' };
-let st = null; // estado de la hoja de personalización
+let st = null;
+
+// Efecto visual de salpicadura de salsa al pulsar botones
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button, .card, .feature, .pill, .chip, .extra');
+  if (!btn) return;
+  const rect = btn.getBoundingClientRect();
+  const drop = document.createElement('span');
+  drop.className = 'sauce-splash';
+  const size = Math.max(rect.width, rect.height) * 1.2;
+  drop.style.width = drop.style.height = `${size}px`;
+  drop.style.left = `${e.clientX - rect.left - size/2}px`;
+  drop.style.top = `${e.clientY - rect.top - size/2}px`;
+  btn.appendChild(drop);
+  setTimeout(() => drop.remove(), 450);
+});
 
 /* ---------- Guardado local ---------- */
 function save() {
@@ -76,13 +90,11 @@ function updateStatus() {
   $('span', s).textContent = o.text;
 }
 
-/* ---------- Miniaturas automáticas (foto real o tarjeta elegante) ---------- */
 function thumb(it) {
   const img = it.img ? `<img src="${it.img}" alt="${esc(it.name)}" loading="lazy" onerror="this.remove()">` : '';
   return `<div class="thumb"><span>${esc(catName(it.cat))}</span>${img}</div>`;
 }
 
-/* ---------- Pintar la carta ---------- */
 function cardHTML(it, n) {
   return `<article class="card" data-id="${it.id}" style="animation-delay:${n * 40}ms">
     <div class="info-col">
@@ -100,7 +112,7 @@ function featureHTML(it, n) {
     <div class="f-body">
       <h3>${esc(it.name)}</h3>
       <p>${esc(it.desc || '')}</p>
-      <div class="f-foot"><span class="f-price">${eur(it.price)}</span><span class="f-btn">${it.drink ? 'Elegir bebida' : 'Añadir'}</span></div>
+      <div class="f-foot"><span class="f-price">${eur(it.price)}</span><span class="f-btn">Añadir</span></div>
     </div>
   </article>`;
 }
@@ -126,21 +138,15 @@ function setupScrollSpy() {
     entries.forEach(e => {
       if (e.isIntersecting) {
         pills.forEach(p => p.classList.toggle('on', p.dataset.go === e.target.id));
-        const on = $('.pill.on');
-        if (on) on.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-      }
-    });
-  }, { rootMargin: '-120px 0px -65% 0px' });
-  $$('.section').forEach(s => obs.observe(s));
+        const on = $('.pill.on');         if (on) on.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });       }     });   }, { rootMargin: '-120px 0px -65\% 0px' });   $$('.section').forEach(s => obs.observe(s));
 }
 
 function setupSearch() {
   $('#search').addEventListener('input', e => {
     const q = e.target.value.trim().toLowerCase();
     let any = false;
-    $$('.section').forEach(sec => {
-      let vis = 0;
-      $$('[data-id]', sec).forEach(card => {
+    $$('.section').forEach(sec => {       let vis = 0;       $$
+('[data-id]', sec).forEach(card => {
         const it = byId(card.dataset.id);
         const hit = !q || (it.name + ' ' + (it.desc || '')).toLowerCase().includes(q);
         card.style.display = hit ? '' : 'none';
@@ -153,7 +159,6 @@ function setupSearch() {
   });
 }
 
-/* ---------- Hojas (abrir/cerrar) ---------- */
 function openOverlay(id) {
   const o = $('#' + id);
   o.hidden = false;
@@ -161,20 +166,26 @@ function openOverlay(id) {
   requestAnimationFrame(() => requestAnimationFrame(() => o.classList.add('show')));
 }
 function closeOverlay(id) {
-  const o = $('#' + id);
-  o.classList.remove('show');
-  setTimeout(() => {
-    o.hidden = true;
-    if ($$('.overlay').every(x => x.hidden)) document.body.classList.remove('lock');
+  const o = $('#' + id);   o.classList.remove('show');   setTimeout(() => {     o.hidden = true;     if ($$('.overlay').every(x => x.hidden)) document.body.classList.remove('lock');
     refreshBar();
   }, 280);
 }
 
-/* ---------- Producto: personalizar ---------- */
 function onItem(id) {
   const it = byId(id);
   buzz();
-  if (!it.units && !it.drink) { addDirect(it); return; }
+  
+  // Mostrar foto grande en el popup
+  const imgWrap = $('#sheetImgWrap');
+  const imgEl = $('#sheetImg');
+  if (it.img) {
+    imgEl.src = it.img;
+    imgWrap.hidden = false;
+  } else {
+    imgWrap.hidden = true;
+    imgEl.src = '';
+  }
+
   st = {
     item: it, qty: 1, drink: null,
     units: (it.units || []).map(u => ({
@@ -190,7 +201,7 @@ function onItem(id) {
   renderUnits();
   renderDrinks();
   updateSheetPrice();
-  $('.sheet-body', $('#sheet')).scrollTop = 0;
+  $('.sheet-body',$('#sheet')).scrollTop = 0;
   openOverlay('sheet');
 }
 
@@ -204,6 +215,7 @@ function renderUnits() {
   const multi = st.units.length > 1;
   $('#sheetUnits').innerHTML = st.units.map((u, i) => {
     const k = KINDS[u.kind];
+    if (!k) return '';
     const falafel = u.meat === 'Falafel';
     let h = `<div class="unit">`;
     if (multi) h += `<h5>${esc(u.label)} ${i + 1}</h5>`;
@@ -240,6 +252,7 @@ function updateSheetPrice() {
 
 function describeUnit(u) {
   const k = KINDS[u.kind];
+  if (!k) return [];
   const parts = [];
   if (k.meat) parts.push(u.meat);
   if (k.side) parts.push(u.side);
@@ -276,7 +289,6 @@ function addDirect(it) {
   toast(it.name + ' añadido');
 }
 
-/* ---------- Carrito ---------- */
 const sauceCount = () => sauces.blanca + sauces.roja + sauces.picante;
 const subtotal = () => cart.reduce((s, l) => s + l.price * l.qty, 0) + sauceCount() * P.salsa;
 const itemCount = () => cart.reduce((s, l) => s + l.qty, 0) + sauceCount();
@@ -288,8 +300,7 @@ function afterCartChange() {
 }
 
 function refreshBar() {
-  const bar = $('#bar');
-  const anyOpen = $$('.overlay').some(o => !o.hidden);
+  const bar = $('#bar');   const anyOpen = $$('.overlay').some(o => !o.hidden);
   const n = itemCount();
   if (n > 0 && !anyOpen) {
     $('#barQty').textContent = n;
@@ -339,14 +350,15 @@ function renderCart() {
     ? 'Has alcanzado el pedido mínimo'
     : `Añade ${eur(MIN_ORDER - sub)} más para llegar al pedido mínimo de ${eur(MIN_ORDER)}`;
 
-  $$('#payType button').forEach(b => b.classList.toggle('on', b.dataset.v === pay.type));
-  $$('#exactType button').forEach(b => b.classList.toggle('on', b.dataset.v === pay.exact));
-  $('#cashBox').hidden = pay.type !== 'efectivo';
-  $('#cardHint').hidden = pay.type !== 'tarjeta';
-  $('#changeBox').hidden = pay.exact !== 'no';
+  $$('#payType button').forEach(b => b.classList.toggle('on', b.dataset.v === pay.type));   $$
+('#exactType button').forEach(b => b.classList.toggle('on', b.dataset.v === pay.exact));
+  
+  const isCash = pay.type === 'efectivo';
+  $('#cashBox').hidden = !isCash;
+  $('#cardHint').hidden = isCash;
+  $('#changeBox').hidden = !isCash || pay.exact !== 'no';
 }
 
-/* ---------- Enviar por WhatsApp ---------- */
 function sendOrder() {
   if (!cart.length) return toast('Tu pedido está vacío');
   const sub = subtotal();
@@ -373,55 +385,87 @@ function sendOrder() {
   if (!isOpen() && !confirm('Ahora mismo estamos cerrados. ¿Enviar el pedido igualmente?')) return;
 
   const id = Math.random().toString(36).slice(2, 7).toUpperCase();
-  const LINE = '------------------------------';
+  const BIG_LINE = '==============================';
   const L = [];
+
   L.push('*NUEVO PEDIDO · REHMAN DÖNER KEBAB*');
   L.push(`Pedido #${id}`);
-  L.push(LINE);
-  cart.forEach(l => {
-    L.push(`*${l.qty}x ${l.name}* — ${eur(l.price * l.qty)}`);
-    l.units.forEach(u => {
-      const txt = u.parts.join(' | ');
-      if (txt) L.push(`   • ${l.multi ? u.label + ': ' : ''}${txt}`);
-    });
-    if (l.drink) L.push(`   • Bebida: ${l.drink}`);
-    if (l.note) L.push(`   • Nota: ${l.note}`);
-  });
-  if (sauceCount()) {
-    L.push('');
-    L.push('*SALSAS EXTRA*');
-    if (sauces.blanca) L.push(`   • ${sauces.blanca}x Salsa blanca`);
-    if (sauces.roja) L.push(`   • ${sauces.roja}x Salsa roja`);
-    if (sauces.picante) L.push(`   • ${sauces.picante}x Salsa picante`);
-  }
-  L.push(LINE);
-  L.push(`Subtotal: ${eur(sub)}`);
-  L.push(`Envío: ${eur(FEE)}`);
-  L.push(`*TOTAL: ${eur(total)}*`);
-  L.push(LINE);
-  L.push('*CLIENTE*');
+  L.push(BIG_LINE);
+
+  L.push('*DATOS DEL CLIENTE*');
   L.push(`Nombre: ${name}`);
   L.push(`Dirección: ${address}`);
   L.push(`Teléfono: ${phone}`);
-  L.push('');
-  L.push('*PAGO*');
+  L.push(BIG_LINE);
+
+  L.push('*PRODUCTOS*');
+  cart.forEach((l, idx) => {
+    if (idx > 0) {
+      L.push(BIG_LINE);
+    }
+    L.push(`*${l.qty}x ${l.name}* — ${eur(l.price * l.qty)}`);
+    l.units.forEach(u => {
+      const txt = u.parts.join(' | ');
+      if (txt) L.push(`    • ${l.multi ? u.label + ': ' : ''}${txt}`);
+    });
+    if (l.drink) L.push(`    • Bebida: ${l.drink}`);
+    if (l.note) L.push(`    • Nota: ${l.note}`);
+  });
+
+  if (sauceCount()) {
+    L.push(BIG_LINE);
+    L.push('*SALSAS EXTRA*');
+    if (sauces.blanca) L.push(`    • ${sauces.blanca}x Salsa blanca`);
+    if (sauces.roja) L.push(`    • ${sauces.roja}x Salsa roja`);
+    if (sauces.picante) L.push(`    • ${sauces.picante}x Salsa picante`);
+  }
+
+  L.push(BIG_LINE);
+
+  L.push(`Subtotal: ${eur(sub)}`);
+  L.push(`Envío: ${eur(FEE)}`);
+  L.push(`*TOTAL A PAGAR: ${eur(total)}*`);
+  L.push(BIG_LINE);
+  L.push('*MÉTODO DE PAGO*');
   L.push(payText);
+
   const gen = $('#cNote').value.trim();
   if (gen) {
-    L.push(LINE);
+    L.push(BIG_LINE);
     L.push('*NOTA GENERAL*');
     L.push(gen);
   }
+
   save();
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(L.join('\n'))}`, '_blank');
 }
 
-/* ---------- Eventos ---------- */
 function bind() {
+  // Manejo de clics diferenciados en la carta
   $('#menu').addEventListener('click', e => {
-    const c = e.target.closest('[data-id]');
-    if (c) onItem(c.dataset.id);
+    const card = e.target.closest('[data-id]');
+    if (!card) return;
+    const itemId = card.dataset.id;
+    const it = byId(itemId);
+    if (!it) return;
+
+    // Comprobar si se hizo clic explícitamente en el botón de más (+) o botón de añadir
+    const isPlusClick = e.target.closest('.plus, .f-btn');
+
+    if (isPlusClick) {
+      // Si el producto tiene opciones (carne, bebida, etc.), abrimos el popup obligatoriamente
+      if (it.units || it.drink) {
+        onItem(itemId);
+      } else {
+        // Si no tiene opciones (ej. raciones o bebidas simples), se añade directamente
+        addDirect(it);
+      }
+    } else {
+      // Si hacen clic en la foto, el nombre o la descripción, abren el popup para ver la foto grande y detalles
+      onItem(itemId);
+    }
   });
+
   $('#pills').addEventListener('click', e => {
     const b = e.target.closest('.pill');
     if (!b) return;
@@ -430,7 +474,6 @@ function bind() {
   });
   $('#heroBtn').addEventListener('click', () => $('#novedades').scrollIntoView({ behavior: 'smooth' }));
 
-  // Hoja de producto
   $('#sheetUnits').addEventListener('click', e => {
     const b = e.target.closest('[data-act]');
     if (!b) return;
@@ -454,16 +497,11 @@ function bind() {
   });
   $('#qMinus').addEventListener('click', () => { if (st.qty > 1) { st.qty--; updateSheetPrice(); } });
   $('#qPlus').addEventListener('click', () => { if (st.qty < 20) { st.qty++; updateSheetPrice(); } });
-  $('#addBtn').addEventListener('click', confirmItem);
-
-  // Cerrar hojas
-  $$('[data-close]').forEach(b => b.addEventListener('click', () => closeOverlay(b.dataset.close)));
-  $$('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeOverlay(o.id); }));
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') $$('.overlay').filter(o => !o.hidden).forEach(o => closeOverlay(o.id));
+  $('#addBtn').addEventListener('click', confirmItem);    $$('[data-close]').forEach(b => b.addEventListener('click', () => closeOverlay(b.dataset.close)));
+  $$('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeOverlay(o.id); }));   document.addEventListener('keydown', e => {     if (e.key === 'Escape') $$
+('.overlay').filter(o => !o.hidden).forEach(o => closeOverlay(o.id));
   });
 
-  // Carrito
   $('#barBtn').addEventListener('click', () => { renderCart(); openOverlay('cart'); $('#bar').classList.remove('show'); });
   $('#cartItems').addEventListener('click', e => {
     const b = e.target.closest('button[data-d]');
@@ -474,10 +512,7 @@ function bind() {
     buzz();
     afterCartChange();
   });
-  $('#clearBtn').addEventListener('click', () => {
-    if (confirm('¿Vaciar todo el pedido?')) { cart = []; sauces = { blanca: 0, roja: 0, picante: 0 }; afterCartChange(); }
-  });
-  $$('.mini[data-sauce]').forEach(m => m.addEventListener('click', e => {
+  $('#clearBtn').addEventListener('click', () => {     if (confirm('¿Vaciar todo el pedido?')) { cart = []; sauces = { blanca: 0, roja: 0, picante: 0 }; afterCartChange(); }   });   $$('.mini[data-sauce]').forEach(m => m.addEventListener('click', e => {
     const b = e.target.closest('button[data-d]');
     if (!b) return;
     const k = m.dataset.sauce;
@@ -493,11 +528,9 @@ function bind() {
     const b = e.target.closest('button'); if (!b) return;
     pay.exact = b.dataset.v; save(); renderCart();
   });
-  ['#cName', '#cAddress', '#cPhone'].forEach(s => $(s).addEventListener('input', save));
-  $('#sendBtn').addEventListener('click', sendOrder);
+  ['#cName', '#cAddress', '#cPhone'].forEach(s => $(s).addEventListener('input', save));$('#sendBtn').addEventListener('click', sendOrder);
 }
 
-/* ---------- Inicio ---------- */
 renderMenu();
 load();
 bind();

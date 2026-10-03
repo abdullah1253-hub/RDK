@@ -13,10 +13,21 @@
 </head>
 <body>
 
+  <!-- FONDO ANIMADO ALEGRE -->
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
   <!-- CABECERA -->
   <header class="topbar">
     <div class="wrap topbar-row">
-      <a class="brand" href="#top" aria-label="Rehman Döner Kebab">Rehman <em>Döner Kebab</em></a>
+      <a class="brand" href="#top" aria-label="Rehman Döner Kebab">
+        <div class="brand-logo-slot">
+          <img src="fotos-menu/logo.png" alt="Logo" onerror="this.style.display='none'">
+        </div>
+        <span>Rehman <em>Döner Kebab</em></span>
+      </a>
       <p id="status" class="status"><i class="dot"></i><span>Cargando…</span></p>
     </div>
     <nav class="pills" id="pills" aria-label="Categorías"></nav>
@@ -71,7 +82,7 @@
     </button>
   </div>
 
-  <!-- HOJA: PERSONALIZAR PRODUCTO -->
+  <!-- HOJA: PERSONALIZAR PRODUCTO (CON FOTO GRANDE) -->
   <div class="overlay" id="sheet" hidden>
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
       <div class="sheet-head">
@@ -82,6 +93,10 @@
         <button class="x" data-close="sheet" aria-label="Cerrar">&times;</button>
       </div>
       <div class="sheet-body">
+        <!-- Contenedor para la foto grande del producto -->
+        <div id="sheetImgWrap" class="sheet-img-wrap" hidden>
+          <img id="sheetImg" src="" alt="Foto del producto">
+        </div>
         <div id="sheetUnits"></div>
         <div id="sheetDrink" class="unit" hidden>
           <div>
