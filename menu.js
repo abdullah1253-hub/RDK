@@ -65,7 +65,7 @@ const ITEMS = [
   { id: 'm9',  cat: 'menus', name: '9. Menú Kebab', desc: 'Kebab, patatas y bebida', price: 7.50, img: 'fotos-menu/menukebab.jpg', units: U('wrap', 'Kebab'), note: true, drink: true },
   { id: 'm10', cat: 'menus', name: '10. Menú Durum', desc: 'Durum, patatas y bebida', price: 8.00, img: 'fotos-menu/menudurum.png', units: U('wrap', 'Durum'), note: true, drink: true },
   { id: 'm11', cat: 'menus', name: '11. Menú Lahmacun', desc: 'Lahmacun, patatas y bebida', price: 8.50, img: 'fotos-menu/lahmacun.png', units: U('wrap', 'Lahmacun'), note: true, drink: true },
-  { id: 'm13', cat: 'menus', name: '13. Menú Infantil', desc: 'Carne con arroz o patatas y bebida', price: 6.50, img: 'fotos-menu/infantil.jpg', units: U('infantil', 'Menú infantil'), drink: true },
+  { id: 'm13', cat: 'menus', name: '13. Menú Infantil', desc: 'Carne con arroz o patatas y bebida', price: 6.50, img: 'fotos-menu/infantil.png', units: U('infantil', 'Menú infantil'), drink: true },
   { id: 'm14', cat: 'menus', name: '14. Menú Plato', desc: 'Plato con ensalada y salsa, y bebida', price: 8.00, img: 'fotos-menu/plato.jpg', units: U('plato', 'Plato'), drink: true },
   { id: 'm15', cat: 'menus', name: '15. Menú Hamburguesa', desc: 'Hamburguesa de pollo y queso con ensalada y salsa, patatas y bebida', price: 6.50, img: 'fotos-menu/hamburguesa.jpg', drink: true },
   { id: 'm16', cat: 'menus', name: '16. Menú Plato Queso Gratinado', desc: 'Patatas con queso gratinado, carne, salsa y bebida', price: 8.00, img: 'fotos-menu/gratinado.jpg', units: U('platoNS', 'Plato'), drink: true },
@@ -107,7 +107,7 @@ const ITEMS = [
   { id: 'r6', cat: 'raciones', name: '40. Nuggets (6)', desc: '6 unidades', price: 4.50, img: 'fotos-menu/nuggets.jpg' },
   { id: 'r7', cat: 'raciones', name: 'Nuggets con Patatas', desc: '6 nuggets con patatas', price: 5.50, img: 'fotos-menu/nuggetspatatas.jpg' },
   { id: 'r8', cat: 'raciones', name: 'Hamburguesa de Pollo', desc: 'Hamburguesa suelta', price: 4.00, img: 'fotos-menu/hamburguesa.jpg' },
-  { id: 'r9', cat: 'raciones', name: 'Ración Falafel (5)', desc: '5 unidades', price: 3.50, img: 'fotos-menu/falafel.jpg' },
+  { id: 'r9', cat: 'raciones', name: 'Ración Falafel (5)', desc: '5 unidades', price: 3.50, img: 'fotos-menu/falafel.png' },
 
   /* ---------- BEBIDAS ---------- */
   { id: 'b1', cat: 'bebidas', name: 'Lata de Refresco', desc: '33 cl', price: 2.00, img: 'fotos-menu/lata.jpg' },
