@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap');
+
+/* Base Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #111111;
+    color: #ffffff;
+    -webkit-tap-highlight-color: transparent; /* Removes blue tap highlight on mobile */
+}
+
+h1, h2, h3, h4, .title-font {
+    font-family: 'Oswald', sans-serif;
+}
+
+/* Theme Colors */
+.text-theme-red { color: #e62429; }
+.bg-theme-red { background-color: #e62429; }
+.text-theme-yellow { color: #facc15; }
+
+/* Safe area padding for modern iPhones (Notch/Home bar) */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+.pt-safe { padding-top: env(safe-area-inset-top); }
+
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.5s ease-in forwards;
+    opacity: 0;
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateY(15px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Menu Card Hover/Active effects */
+.menu-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    transition: all 0.2s ease;
+}
+
+@media (hover: hover) {
+    .menu-card:hover {
+        transform: translateY(-4px);
+        border-color: #e62429;
+        box-shadow: 0 8px 16px rgba(230, 36, 41, 0.15);
+    }
+}
+
+/* Cart Sidebar Animation */
+#cart-sidebar {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cart-open { transform: translateX(0%); }
+.cart-closed { transform: translateX(100%); }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+::-webkit-scrollbar-thumb:active { background: #e62429; }
+
+/* Mobile Select Dropdown Styling */
+select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
