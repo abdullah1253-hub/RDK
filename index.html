@@ -182,6 +182,34 @@
           <div class="sauce"><span>Salsa picante</span><div class="mini" data-sauce="picante"><button data-d="-1">&minus;</button><b>0</b><button data-d="1">+</button></div></div>
         </div>
 
+        <!-- SECCIÓN BEBIDAS EN EL CARRITO -->
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+            <h4 style="margin-bottom: 10px; font-size: 14px;">Añadir Bebidas al Pedido</h4>
+            
+            <!-- Latas -->
+            <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">Latas (1.50€)</div>
+            <div class="chips" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+                <button type="button" class="chip" onclick="addQuickDrink('Coca Cola', 1.50, 'Lata')">+ Coca Cola</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Coca Cola Cero', 1.50, 'Lata')">+ Coca Cola Cero</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Coca Cola Cero Cero', 1.50, 'Lata')">+ Coca Cero Cero</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Sprite', 1.50, 'Lata')">+ Sprite</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Fanta Naranja', 1.50, 'Lata')">+ Fanta Naranja</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Fanta Limón', 1.50, 'Lata')">+ Fanta Limón</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Aquarius Limón', 1.50, 'Lata')">+ Aquarius Limón</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Aquarius Naranja', 1.50, 'Lata')">+ Aquarius Naranja</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Aquarius Melocotón', 1.50, 'Lata')">+ Aquarius Melocotón</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Fuze Tea Limón', 1.50, 'Lata')">+ Fuze Tea Limón</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Fuze Tea Maracuyá', 1.50, 'Lata')">+ Fuze Tea Maracuyá</button>
+            </div>
+
+            <!-- Otras Bebidas -->
+            <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">Otras Bebidas</div>
+            <div class="chips" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <button type="button" class="chip" onclick="addQuickDrink('Agua 0.5L', 1.00, '')">+ Agua 0.5L (1.00€)</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Ayran', 1.50, '')">+ Ayran (1.50€)</button>
+                <button type="button" class="chip" onclick="addQuickDrink('Coca-Cola 2L', 3.00, '')">+ Coca-Cola 2L (3.00€)</button>
+            </div>
+        </div>
         <div class="block">
           <h4>Datos de entrega</h4>
           <input id="cName" type="text" placeholder="Nombre" autocomplete="name">
@@ -235,6 +263,6 @@
 
   <!-- Scripts con versión (?v=1.0) -->
 <script src="menu.js?v=1.1"></script>
-<script src="script.js?v=1.1"></script>
+<script src="script.js?v=1.2"></script>
 </body>
 </html>

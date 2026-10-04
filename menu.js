@@ -18,17 +18,9 @@ const CATS = [
 ];
 
 const DRINKS = [
-  'Coca-Cola',
-  'Coca-Cola Zero',
-  'Coca-Cola Zero Zero',
-  'Aquarius Limón',
-  'Aquarius Naranja',
-  'Fanta Naranja',
-  'Fanta Limón',
-  'Fuze Tea Limón',
-  'Fuze Tea Maracuyá',
-  'Sprite',
-  'Botella de agua'
+  'Coca Cola', 'Coca Cola Cero', 'Coca Cola Cero Cero', 'Sprite', 
+  'Fanta Naranja', 'Fanta Limón', 'Aquarius Limón', 'Aquarius Naranja', 
+  'Aquarius Melocotón', 'Fuze Tea Limón', 'Fuze Tea Maracuyá', 'Agua'
 ];
 
 const KINDS = {
@@ -48,18 +40,18 @@ const U = (kind, label, n = 1, extra = {}) =>
 
 const ITEMS = [
   /* ---------- NOVEDADES ---------- */
-  { id: 'tacos', cat: 'novedades', name: 'Tacos Francés', desc: 'Tacos de pollo casero con patatas y salsa integrada. Crujientes por fuera, cremosos por dentro.', price: 9.00, img: 'fotos-menu/tacos.png', badge: 'Novedad' },
-  { id: 'menu-tacos', cat: 'novedades', name: 'Menú Tacos Francés', desc: 'Nuestros tacos de pollo casero con patatas y salsa, acompañados de una bebida a tu elección.', price: 12.00, img: 'fotos-menu/tacos.png', badge: 'Menú', drink: true },
+  { id: 'tacos', cat: 'novedades', name: 'Tacos Francés', desc: 'Tacos de pollo casero con patatas y salsa integrada. Crujientes por fuera, cremosos por dentro.', price: 10.00, img: 'fotos-menu/tacos.png', badge: 'Novedad' },
+  { id: 'menu-tacos', cat: 'novedades', name: 'Menú Tacos Francés', desc: 'Nuestros tacos de pollo casero con patatas y salsa, acompañados de una bebida a tu elección y patatas fritas.', price: 13.00, img: 'fotos-menu/tacos.png', badge: 'Menú', drink: true },
 
   /* ---------- OFERTAS ---------- */
-  { id: 'o1', cat: 'ofertas', name: 'Oferta 1', desc: '3 Kebab, 1 patatas y 1 Coca-Cola 1,25L', price: 20.00, img: 'fotos-menu/kebab.jpg', units: U('wrap', 'Kebab', 3), note: true },
-  { id: 'o2', cat: 'ofertas', name: 'Oferta 2', desc: '2 Platos y 1 Coca-Cola 1,25L', price: 14.00, img: 'fotos-menu/plato.jpg', units: U('plato', 'Plato', 2) },
-  { id: 'o3', cat: 'ofertas', name: 'Oferta 3', desc: '2 Durum, 1 patatas y 1 Coca-Cola 1,25L', price: 15.00, img: 'fotos-menu/durum.jpg', units: U('wrap', 'Durum', 2), note: true },
-  { id: 'o4', cat: 'ofertas', name: 'Oferta 4', desc: '4 Durum, 1 patatas y 1 Coca-Cola 1,25L', price: 24.00, img: 'fotos-menu/durum.jpg', units: U('wrap', 'Durum', 4), note: true },
-  { id: 'o5', cat: 'ofertas', name: 'Oferta 5', desc: '3 Durum, 1 patatas y 1 Coca-Cola 1,25L', price: 23.00, img: 'fotos-menu/durum.jpg', units: U('wrap', 'Durum', 3), note: true },
-  { id: 'o6', cat: 'ofertas', name: 'Oferta 6', desc: '3 Hamburguesas, 1 patatas y 1 Coca-Cola 1,25L', price: 14.00, img: 'fotos-menu/hamburguesa.jpg' },
-  { id: 'o7', cat: 'ofertas', name: 'Oferta 7', desc: '3 Kebab, alitas (6 uds), 1 patatas y 1 Coca-Cola', price: 24.00, img: 'fotos-menu/kebab.jpg', units: U('wrap', 'Kebab', 3), note: true },
-  { id: 'o8', cat: 'ofertas', name: 'Oferta 8', desc: '4 Kebab, 1 patatas y 1 Coca-Cola 1,25L', price: 24.00, img: 'fotos-menu/kebab.jpg', units: U('wrap', 'Kebab', 4), note: true },
+  { id: 'o1', cat: 'ofertas', name: 'Oferta 1', desc: '3 Kebab, 1 patatas y 1 Coca-Cola 1,25L', price: 19.00, img: 'fotos-menu/kebab.jpg', units: U('wrap', 'Kebab', 3), note: true },
+  { id: 'o2', cat: 'ofertas', name: 'Oferta 2', desc: '2 Platos y 1 Coca-Cola 1,25L', price: 15.00, img: 'fotos-menu/plato.jpg', units: U('plato', 'Plato', 2) },
+  { id: 'o3', cat: 'ofertas', name: 'Oferta 3', desc: '2 Durum, 1 patatas y 1 Coca-Cola 1,25L', price: 16.00, img: 'fotos-menu/durum.jpg', units: U('wrap', 'Durum', 2), note: true },
+  { id: 'o4', cat: 'ofertas', name: 'Oferta 4', desc: '4 Durum, 1 patatas y 1 Coca-Cola 1,25L', price: 27.50, img: 'fotos-menu/durum.jpg', units: U('wrap', 'Durum', 4), note: true },
+  { id: 'o5', cat: 'ofertas', name: 'Oferta 5', desc: '3 Durum, 1 patatas y 1 Coca-Cola 1,25L', price: 21.50, img: 'fotos-menu/durum.jpg', units: U('wrap', 'Durum', 3), note: true },
+  { id: 'o6', cat: 'ofertas', name: 'Oferta 6', desc: '3 Hamburguesas, 1 patatas y 1 Coca-Cola 1,25L', price: 15.50, img: 'fotos-menu/hamburguesa.jpg' },
+  { id: 'o7', cat: 'ofertas', name: 'Oferta 7', desc: '3 Kebab, alitas (6 uds), 1 patatas y 1 Coca-Cola', price: 24.50, img: 'fotos-menu/kebab.jpg', units: U('wrap', 'Kebab', 3), note: true },
+  { id: 'o8', cat: 'ofertas', name: 'Oferta 8', desc: '4 Kebab, 1 patatas y 1 Coca-Cola 1,25L', price: 23.50, img: 'fotos-menu/kebab.jpg', units: U('wrap', 'Kebab', 4), note: true },
 
   /* ---------- MENÚS ---------- */
   { id: 'm9',  cat: 'menus', name: '9. Menú Kebab', desc: 'Kebab, patatas y bebida', price: 7.50, img: 'fotos-menu/menukebab.jpg', units: U('wrap', 'Kebab'), note: true, drink: true },

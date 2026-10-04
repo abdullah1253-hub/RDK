@@ -1,23 +1,27 @@
 /* =========================================================
-   REHMAN DÖNER KEBAB — lógica de la web
+   REHMAN DÖNER KEBAB — LÓGICA DE LA WEB (script.js)
    ========================================================= */
-const FEE = 2.00;
-const MIN_ORDER = 10.00;
-const WA_NUMBER = '34613802925';
-const P = { queso: 0.50, carne: 1.00, solo: 1.00, salsa: 0.50 };
-const STORE = 'rehman-kebab-v3';
 
-const $ = (s, r = document) => r.querySelector(s); const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+/* ---------- 1. CONFIGURACIÓN Y VARIABLES GLOBALES ---------- */
+const FEE = 2.00; // Precio del envío
+const MIN_ORDER = 10.00; // Pedido mínimo
+const WA_NUMBER = '34613802925'; // Teléfono de WhatsApp
+const P = { queso: 0.50, carne: 1.00, solo: 1.00, salsa: 0.50 }; // Precios de extras
+const STORE = 'rehman-kebab-v3'; // Nombre del almacenamiento local
+
+const $ = (s, r = document) => r.querySelector(s);  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const eur = n => n.toFixed(2).replace('.', ',') + '€';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const byId = id => ITEMS.find(i => i.id === id);
 const catName = id => (CATS.find(c => c.id === id) || {}).name || '';
 
-let cart = [];
-let sauces = { blanca: 0, roja: 0, picante: 0 };
-let pay = { type: 'efectivo', exact: 'si' };
-let st = null;
+let cart = []; // Array donde se guardan los productos del cliente
+let sauces = { blanca: 0, roja: 0, picante: 0 }; // Contador de salsas extra
+let pay = { type: 'efectivo', exact: 'si' }; // Opciones de pago por defecto
+let st = null; // Estado temporal del producto que se está personalizando
 
+
+/* ---------- 2. EFECTOS VISUALES ---------- */
 // Efecto visual de salpicadura de salsa al pulsar botones
 document.addEventListener('click', e => {
   const btn = e.target.closest('button, .card, .feature, .pill, .chip, .extra');
@@ -33,7 +37,8 @@ document.addEventListener('click', e => {
   setTimeout(() => drop.remove(), 450);
 });
 
-/* ---------- Guardado local ---------- */
+
+/* ---------- 3. GUARDADO LOCAL (Para no perder datos al recargar) ---------- */
 function save() {
   try {
     localStorage.setItem(STORE, JSON.stringify({
@@ -42,6 +47,7 @@ function save() {
     }));
   } catch (e) {}
 }
+
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(STORE) || 'null');
@@ -55,7 +61,8 @@ function load() {
   } catch (e) {}
 }
 
-/* ---------- Utilidades ---------- */
+
+/* ---------- 4. UTILIDADES (Notificaciones y Vibración) ---------- */
 let toastT;
 function toast(msg) {
   const t = $('#toast');
@@ -64,9 +71,11 @@ function toast(msg) {
   clearTimeout(toastT);
   toastT = setTimeout(() => t.classList.remove('show'), 2300);
 }
+
 const buzz = () => { if (navigator.vibrate) navigator.vibrate(30); };
 
-/* ---------- Horario (hora de Madrid) ---------- */
+
+/* ---------- 5. CONTROL DE HORARIOS (Hora de España) ---------- */
 function madridNow() {
   try {
     const parts = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Madrid' }).formatToParts(new Date());
@@ -75,7 +84,9 @@ function madridNow() {
     return h + m / 60;
   } catch (e) { const d = new Date(); return d.getHours() + d.getMinutes() / 60; }
 }
+
 const fmtH = h => String(Math.floor(h)).padStart(2, '0') + ':' + String(Math.round((h % 1) * 60)).padStart(2, '0');
+
 function openState() {
   const now = madridNow();
   const cur = HOURS.find(([a, b]) => now >= a && now < b);
@@ -83,13 +94,17 @@ function openState() {
   const next = HOURS.find(([a]) => now < a) || HOURS[0];
   return { open: false, text: `Cerrado ahora · abrimos a las ${fmtH(next[0])}` };
 }
+
 const isOpen = () => openState().open;
+
 function updateStatus() {
   const s = $('#status'), o = openState();
   s.classList.toggle('closed', !o.open);
   $('span', s).textContent = o.text;
 }
 
+
+/* ---------- 6. RENDERIZADO DE LA CARTA (HTML) ---------- */
 function thumb(it) {
   const img = it.img ? `<img src="${it.img}" alt="${esc(it.name)}" loading="lazy" onerror="this.remove()">` : '';
   return `<div class="thumb"><span>${esc(catName(it.cat))}</span>${img}</div>`;
@@ -105,6 +120,7 @@ function cardHTML(it, n) {
     <span class="plus" aria-hidden="true">+</span>
   </article>`;
 }
+
 function featureHTML(it, n) {
   const img = it.img ? `<img src="${it.img}" alt="${esc(it.name)}" loading="lazy" onerror="this.remove()">` : '';
   return `<article class="feature card-hit" data-id="${it.id}" style="animation-delay:${n * 90}ms">
@@ -132,6 +148,8 @@ function renderMenu() {
     `<button class="pill${i === 0 ? ' on' : ''}" data-go="${c.id}">${c.name}</button>`).join('');
 }
 
+
+/* ---------- 7. BUSCADOR Y MENÚ DE NAVEGACIÓN ---------- */
 function setupScrollSpy() {
   const pills = $$('.pill');
   const obs = new IntersectionObserver(entries => {
@@ -159,18 +177,23 @@ function setupSearch() {
   });
 }
 
+
+/* ---------- 8. VENTANAS EMERGENTES (Popups) ---------- */
 function openOverlay(id) {
   const o = $('#' + id);
   o.hidden = false;
   document.body.classList.add('lock');
   requestAnimationFrame(() => requestAnimationFrame(() => o.classList.add('show')));
 }
+
 function closeOverlay(id) {
   const o = $('#' + id);   o.classList.remove('show');   setTimeout(() => {     o.hidden = true;     if ($$('.overlay').every(x => x.hidden)) document.body.classList.remove('lock');
     refreshBar();
   }, 280);
 }
 
+
+/* ---------- 9. SELECCIÓN DE PRODUCTOS Y OPCIONES ---------- */
 function onItem(id) {
   const it = byId(id);
   buzz();
@@ -209,7 +232,10 @@ function unitExtra(u) {
   const falafel = u.meat === 'Falafel';
   return (u.queso ? P.queso : 0) + (u.carne && !falafel ? P.carne : 0) + (u.solo && !falafel ? P.solo : 0);
 }
-function unitPrice() { return st.item.price + st.units.reduce((s, u) => s + unitExtra(u), 0); }
+
+function unitPrice() { 
+  return st.item.price + st.units.reduce((s, u) => s + unitExtra(u), 0); 
+}
 
 function renderUnits() {
   const multi = st.units.length > 1;
@@ -275,7 +301,10 @@ function confirmItem() {
   const line = { itemId: it.id, name: it.name, price: unitPrice(), qty: st.qty, units, multi: units.length > 1, drink, note };
   const key = JSON.stringify([line.itemId, line.price, units, drink, note]);
   const ex = cart.find(l => JSON.stringify([l.itemId, l.price, l.units, l.drink || '', l.note]) === key);
-  if (ex) ex.qty += st.qty; else cart.push(line);
+  
+  if (ex) ex.qty += st.qty; 
+  else cart.push(line);
+  
   closeOverlay('sheet');
   afterCartChange();
   toast('Añadido al pedido');
@@ -289,6 +318,8 @@ function addDirect(it) {
   toast(it.name + ' añadido');
 }
 
+
+/* ---------- 10. GESTIÓN DEL CARRITO ---------- */
 const sauceCount = () => sauces.blanca + sauces.roja + sauces.picante;
 const subtotal = () => cart.reduce((s, l) => s + l.price * l.qty, 0) + sauceCount() * P.salsa;
 const itemCount = () => cart.reduce((s, l) => s + l.qty, 0) + sauceCount();
@@ -359,6 +390,8 @@ function renderCart() {
   $('#changeBox').hidden = !isCash || pay.exact !== 'no';
 }
 
+
+/* ---------- 11. ENVÍO DEL PEDIDO (WhatsApp) ---------- */
 function sendOrder() {
   if (!cart.length) return toast('Tu pedido está vacío');
   const sub = subtotal();
@@ -382,7 +415,9 @@ function sendOrder() {
     if (!c || c < total) { $('#cChange').focus(); return toast(`Indica con cuánto pagas (mínimo ${eur(total)})`); }
     payText = `Efectivo, paga con ${eur(c)} (cambio: ${eur(c - total)})`;
   }
-  if (!isOpen() && !confirm('Ahora mismo estamos cerrados. ¿Enviar el pedido igualmente?')) return;
+  
+  // ---> AQUÍ ESTÁ EL BLOQUEO AUTOMÁTICO FUERA DE HORARIO <---
+  if (!isOpen()) return toast('Lo sentimos, ahora mismo estamos cerrados.');
 
   const id = Math.random().toString(36).slice(2, 7).toUpperCase();
   const BIG_LINE = '==============================';
@@ -400,9 +435,7 @@ function sendOrder() {
 
   L.push('*PRODUCTOS*');
   cart.forEach((l, idx) => {
-    if (idx > 0) {
-      L.push(BIG_LINE);
-    }
+    if (idx > 0) L.push(BIG_LINE);
     L.push(`*${l.qty}x ${l.name}* — ${eur(l.price * l.qty)}`);
     l.units.forEach(u => {
       const txt = u.parts.join(' | ');
@@ -440,8 +473,9 @@ function sendOrder() {
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(L.join('\n'))}`, '_blank');
 }
 
+
+/* ---------- 12. EVENTOS Y BOTONES (Bind) ---------- */
 function bind() {
-  // Manejo de clics diferenciados en la carta
   $('#menu').addEventListener('click', e => {
     const card = e.target.closest('[data-id]');
     if (!card) return;
@@ -449,19 +483,11 @@ function bind() {
     const it = byId(itemId);
     if (!it) return;
 
-    // Comprobar si se hizo clic explícitamente en el botón de más (+) o botón de añadir
     const isPlusClick = e.target.closest('.plus, .f-btn');
-
     if (isPlusClick) {
-      // Si el producto tiene opciones (carne, bebida, etc.), abrimos el popup obligatoriamente
-      if (it.units || it.drink) {
-        onItem(itemId);
-      } else {
-        // Si no tiene opciones (ej. raciones o bebidas simples), se añade directamente
-        addDirect(it);
-      }
+      if (it.units || it.drink) onItem(itemId);
+      else addDirect(it);
     } else {
-      // Si hacen clic en la foto, el nombre o la descripción, abren el popup para ver la foto grande y detalles
       onItem(itemId);
     }
   });
@@ -472,6 +498,7 @@ function bind() {
     const el = document.getElementById(b.dataset.go);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+  
   $('#heroBtn').addEventListener('click', () => $('#novedades').scrollIntoView({ behavior: 'smooth' }));
 
   $('#sheetUnits').addEventListener('click', e => {
@@ -488,21 +515,31 @@ function bind() {
     renderUnits();
     updateSheetPrice();
   });
-  $('#drinkList').addEventListener('click', e => {
+
+$('#drinkList').addEventListener('click', e => {
     const b = e.target.closest('[data-drink]');
     if (!b) return;
-    st.drink = b.dataset.drink;
+    
+    // Si la bebida que hace clic ya estaba seleccionada, la desmarcamos (vuelve a la nada)
+    if (st.drink === b.dataset.drink) {
+      st.drink = null; 
+    } else {
+      st.drink = b.dataset.drink;
+    }
+    
     buzz();
     renderDrinks();
   });
+
   $('#qMinus').addEventListener('click', () => { if (st.qty > 1) { st.qty--; updateSheetPrice(); } });
   $('#qPlus').addEventListener('click', () => { if (st.qty < 20) { st.qty++; updateSheetPrice(); } });
-  $('#addBtn').addEventListener('click', confirmItem);    $$('[data-close]').forEach(b => b.addEventListener('click', () => closeOverlay(b.dataset.close)));
-  $$('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeOverlay(o.id); }));   document.addEventListener('keydown', e => {     if (e.key === 'Escape') $$
+  $('#addBtn').addEventListener('click', confirmItem);   $$('[data-close]').forEach(b => b.addEventListener('click', () => closeOverlay(b.dataset.close)));
+  $$('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeOverlay(o.id); }));      document.addEventListener('keydown', e => {     if (e.key === 'Escape') $$
 ('.overlay').filter(o => !o.hidden).forEach(o => closeOverlay(o.id));
   });
 
   $('#barBtn').addEventListener('click', () => { renderCart(); openOverlay('cart'); $('#bar').classList.remove('show'); });
+  
   $('#cartItems').addEventListener('click', e => {
     const b = e.target.closest('button[data-d]');
     if (!b) return;
@@ -512,7 +549,8 @@ function bind() {
     buzz();
     afterCartChange();
   });
-  $('#clearBtn').addEventListener('click', () => {     if (confirm('¿Vaciar todo el pedido?')) { cart = []; sauces = { blanca: 0, roja: 0, picante: 0 }; afterCartChange(); }   });   $$('.mini[data-sauce]').forEach(m => m.addEventListener('click', e => {
+  
+  $('#clearBtn').addEventListener('click', () => {     if (confirm('¿Vaciar todo el pedido?')) { cart = []; sauces = { blanca: 0, roja: 0, picante: 0 }; afterCartChange(); }   });      $$('.mini[data-sauce]').forEach(m => m.addEventListener('click', e => {
     const b = e.target.closest('button[data-d]');
     if (!b) return;
     const k = m.dataset.sauce;
@@ -520,17 +558,50 @@ function bind() {
     buzz();
     afterCartChange();
   }));
+
   $('#payType').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     pay.type = b.dataset.v; save(); renderCart();
   });
+
   $('#exactType').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     pay.exact = b.dataset.v; save(); renderCart();
   });
+
   ['#cName', '#cAddress', '#cPhone'].forEach(s => $(s).addEventListener('input', save));$('#sendBtn').addEventListener('click', sendOrder);
 }
 
+
+/* ---------- 13. EXTRAS: AÑADIR BEBIDAS DESDE EL CARRITO ---------- */
+function addQuickDrink(name, price, type) {
+    let finalName = name + (type === 'Lata' ? ' (Lata)' : '');
+
+    // Comprobar si la bebida ya está en el carrito
+    const ex = cart.find(l => l.name === finalName && !l.units.length && !l.drink);
+    
+    if (ex) {
+        ex.qty++; // Si ya la tiene, le sumamos 1 a la cantidad
+    } else {
+        // Si no la tiene, la añadimos nueva
+        cart.push({
+            itemId: 'bebida-' + Date.now(), 
+            name: finalName,
+            price: price,
+            qty: 1,
+            units: [],
+            multi: false,
+            drink: '',
+            note: ''
+        });
+    }
+
+    toast(name + " añadida");
+    afterCartChange(); // Refresca el carrito al instante
+}
+
+
+/* ---------- 14. INICIALIZACIÓN (Arranque de la web) ---------- */
 renderMenu();
 load();
 bind();
