@@ -102,7 +102,7 @@ const ITEMS = [
   { id: 'r9', cat: 'raciones', name: 'Ración Falafel (5)', desc: '5 unidades', price: 3.50, img: 'fotos-menu/falafel.png' },
 
   /* ---------- BEBIDAS ---------- */
-  { id: 'b1', cat: 'bebidas', name: 'Lata de Refresco', desc: '33 cl', price: 2.00, img: 'fotos-menu/lata.jpg' },
+  { id: 'b1', cat: 'bebidas', name: 'Lata de Refresco', desc: '33 cl', price: 2.00, img: 'fotos-menu/lata.jpg', drink: true },
   { id: 'b2', cat: 'bebidas', name: 'Agua', desc: 'Botella pequeña', price: 1.50, img: 'fotos-menu/botella.jpg' },
   { id: 'b3', cat: 'bebidas', name: 'Agua 1,5L', desc: 'Botella grande', price: 2.50, img: 'fotos-menu/botellagrande.jpg' },
   { id: 'b4', cat: 'bebidas', name: 'Coca-Cola 1,25L', desc: 'Botella', price: 3.50, img: 'fotos-menu/cola.jpg' },
