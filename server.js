@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/$/, '');
 const WA_NUMBER = '34613802925';
 const FEE = 2.00;
-const MIN_ORDER = 10.00;
+const MIN_ORDER = 0.50;
 const EXTRA = { queso: 0.50, carne: 1.00, solo: 1.00, salsa: 0.50 };
 const ALLOW_CLOSED = process.env.ALLOW_CLOSED === 'true'; // solo para pruebas
 
