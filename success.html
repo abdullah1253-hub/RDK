@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Pago confirmado! · Rehman Döner Kebab</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:#100e0c; color:#fff; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; padding:20px; text-align:center; }
+  .card { background:#1a1816; padding:32px 24px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.6); max-width:420px; width:100%; border:1px solid #2a2723; }
+  .badge { display:inline-block; background:rgba(74,222,128,.15); color:#4ade80; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:600; margin-bottom:16px; }
+  h1 { font-size:22px; margin:0 0 10px; }
+  p { color:#aaa; font-size:14px; line-height:1.5; margin:0 0 24px; }
+  .btn-wa { background:#25d366; color:#fff; padding:16px 20px; border-radius:12px; text-decoration:none; font-weight:700; font-size:16px; display:none; justify-content:center; width:100%; box-shadow:0 4px 14px rgba(37,211,102,.3); }
+  .btn-home { display:inline-block; margin-top:16px; color:#aaa; font-size:13px; }
+  .spinner { border:4px solid #333; border-top:4px solid #4ade80; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; margin:0 auto 20px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="spinner" id="spinner"></div>
+    <span class="badge" id="badge" style="display:none">✅ Pago confirmado</span>
+    <h1 id="title">Verificando tu pago…</h1>
+    <p id="desc">Un momento, por favor.</p>
+    <a id="waBtn" class="btn-wa" href="#">Enviar pedido por WhatsApp</a>
+    <a class="btn-home" href="/">Volver a la carta</a>
+  </div>
+
+<script>
+  // Si esta página se sirve desde tu backend, deja ''.
+  // Si la web está en rehmandoner.es y el backend en otro sitio, pon aquí la URL del backend.
+  const API = (location.protocol === 'file:') ? 'http://localhost:3000' : '';
+  const STORE = 'rehman-kebab-v3';
+
+  function clearCart() {
+    try {
+      const d = JSON.parse(localStorage.getItem(STORE) || '{}');
+      d.cart = []; d.sauces = { blanca: 0, roja: 0, picante: 0 };
+      localStorage.setItem(STORE, JSON.stringify(d));
+    } catch (e) {}
+  }
+
+  (async () => {
+    const id = new URLSearchParams(location.search).get('session_id');
+    const $ = i => document.getElementById(i);
+    try {
+      if (!id) throw new Error('no session');
+      const r = await fetch(`${API}/order-status?session_id=${encodeURIComponent(id)}`);
+      const d = await r.json();
+      if (!d.paid) throw new Error('not paid');
+
+      $('spinner').style.display = 'none';
+      $('badge').style.display = 'inline-block';
+      $('title').textContent = '¡Gracias por tu pedido!';
+      $('desc').textContent = 'Tu pago está confirmado. Pulsa el botón para enviar el ticket al restaurante por WhatsApp.';
+      const b = $('waBtn'); b.href = d.waUrl; b.style.display = 'flex';
+      clearCart();
+      setTimeout(() => { window.location.href = d.waUrl; }, 1500);
+    } catch (e) {
+      $('spinner').style.display = 'none';
+      $('title').textContent = 'No hemos podido verificar el pago';
+      $('desc').textContent = 'Si has pagado, llámanos al 881 512 777 o al 613 802 925.';
+    }
+  })();
+</script>
+</body>
+</html>

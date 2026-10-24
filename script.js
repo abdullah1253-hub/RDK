@@ -9,6 +9,12 @@ const WA_NUMBER = '34613802925'; // Teléfono de WhatsApp
 const P = { queso: 0.50, carne: 1.00, solo: 1.00, salsa: 0.50 }; // Precios de extras
 const STORE = 'rehman-kebab-v3'; // Nombre del almacenamiento local
 
+// URL del backend: en tu Mac usa localhost, en la web real usa tu servidor
+const API = (location.protocol === 'file:') ? 'http://localhost:3000' : '';
+
+// MODO PRUEBAS: true = siempre abierto. Pon false antes de publicar.
+const FORCE_OPEN = true;
+
 const $ = (s, r = document) => r.querySelector(s);  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const eur = n => n.toFixed(2).replace('.', ',') + '€';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -22,7 +28,6 @@ let st = null; // Estado temporal del producto que se está personalizando
 
 
 /* ---------- 2. EFECTOS VISUALES ---------- */
-// Efecto visual de salpicadura de salsa al pulsar botones
 document.addEventListener('click', e => {
   const btn = e.target.closest('button, .card, .feature, .pill, .chip, .extra');
   if (!btn) return;
@@ -38,7 +43,7 @@ document.addEventListener('click', e => {
 });
 
 
-/* ---------- 3. GUARDADO LOCAL (Para no perder datos al recargar) ---------- */
+/* ---------- 3. GUARDADO LOCAL ---------- */
 function save() {
   try {
     localStorage.setItem(STORE, JSON.stringify({
@@ -52,7 +57,7 @@ function load() {
   try {
     const d = JSON.parse(localStorage.getItem(STORE) || 'null');
     if (!d) return;
-    cart = (d.cart || []).filter(l => l && byId(l.itemId));
+    cart = (d.cart || []).filter(l => l && (byId(l.itemId) || String(l.itemId).startsWith('bebida-')));
     sauces = Object.assign(sauces, d.sauces || {});
     pay = Object.assign(pay, d.pay || {});
     $('#cName').value = d.name || '';
@@ -62,7 +67,7 @@ function load() {
 }
 
 
-/* ---------- 4. UTILIDADES (Notificaciones y Vibración) ---------- */
+/* ---------- 4. UTILIDADES ---------- */
 let toastT;
 function toast(msg) {
   const t = $('#toast');
@@ -75,7 +80,7 @@ function toast(msg) {
 const buzz = () => { if (navigator.vibrate) navigator.vibrate(30); };
 
 
-/* ---------- 5. CONTROL DE HORARIOS (Hora de España) ---------- */
+/* ---------- 5. CONTROL DE HORARIOS ---------- */
 function madridNow() {
   try {
     const parts = new Intl.DateTimeFormat('es-ES', { hour: 'numeric', minute: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Madrid' }).formatToParts(new Date());
@@ -95,7 +100,7 @@ function openState() {
   return { open: false, text: `Cerrado ahora · abrimos a las ${fmtH(next[0])}` };
 }
 
-const isOpen = () => openState().open;
+const isOpen = () => FORCE_OPEN || openState().open;
 
 function updateStatus() {
   const s = $('#status'), o = openState();
@@ -104,7 +109,7 @@ function updateStatus() {
 }
 
 
-/* ---------- 6. RENDERIZADO DE LA CARTA (HTML) ---------- */
+/* ---------- 6. RENDERIZADO DE LA CARTA ---------- */
 function thumb(it) {
   const img = it.img ? `<img src="${it.img}" alt="${esc(it.name)}" loading="lazy" onerror="this.remove()">` : '';
   return `<div class="thumb"><span>${esc(catName(it.cat))}</span>${img}</div>`;
@@ -156,15 +161,20 @@ function setupScrollSpy() {
     entries.forEach(e => {
       if (e.isIntersecting) {
         pills.forEach(p => p.classList.toggle('on', p.dataset.go === e.target.id));
-        const on = $('.pill.on');         if (on) on.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });       }     });   }, { rootMargin: '-120px 0px -65\% 0px' });   $$('.section').forEach(s => obs.observe(s));
+        const on = $('.pill.on'); if (on) on.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+      }
+    });
+  }, { rootMargin: '-120px 0px -65% 0px' });
+  $$('.section').forEach(s => obs.observe(s));
 }
 
 function setupSearch() {
   $('#search').addEventListener('input', e => {
     const q = e.target.value.trim().toLowerCase();
     let any = false;
-    $$('.section').forEach(sec => {       let vis = 0;       $$
-('[data-id]', sec).forEach(card => {
+    $$('.section').forEach(sec => {
+      let vis = 0;
+      $$('[data-id]', sec).forEach(card => {
         const it = byId(card.dataset.id);
         const hit = !q || (it.name + ' ' + (it.desc || '')).toLowerCase().includes(q);
         card.style.display = hit ? '' : 'none';
@@ -178,7 +188,7 @@ function setupSearch() {
 }
 
 
-/* ---------- 8. VENTANAS EMERGENTES (Popups) ---------- */
+/* ---------- 8. VENTANAS EMERGENTES ---------- */
 function openOverlay(id) {
   const o = $('#' + id);
   o.hidden = false;
@@ -187,18 +197,21 @@ function openOverlay(id) {
 }
 
 function closeOverlay(id) {
-  const o = $('#' + id);   o.classList.remove('show');   setTimeout(() => {     o.hidden = true;     if ($$('.overlay').every(x => x.hidden)) document.body.classList.remove('lock');
+  const o = $('#' + id);
+  o.classList.remove('show');
+  setTimeout(() => {
+    o.hidden = true;
+    if ($$('.overlay').every(x => x.hidden)) document.body.classList.remove('lock');
     refreshBar();
   }, 280);
 }
 
 
-/* ---------- 9. SELECCIÓN DE PRODUCTOS Y OPCIONES ---------- */
+/* ---------- 9. SELECCIÓN DE PRODUCTOS ---------- */
 function onItem(id) {
   const it = byId(id);
   buzz();
-  
-  // Mostrar foto grande en el popup
+
   const imgWrap = $('#sheetImgWrap');
   const imgEl = $('#sheetImg');
   if (it.img) {
@@ -224,7 +237,7 @@ function onItem(id) {
   renderUnits();
   renderDrinks();
   updateSheetPrice();
-  $('.sheet-body',$('#sheet')).scrollTop = 0;
+  $('.sheet-body', $('#sheet')).scrollTop = 0;
   openOverlay('sheet');
 }
 
@@ -233,8 +246,8 @@ function unitExtra(u) {
   return (u.queso ? P.queso : 0) + (u.carne && !falafel ? P.carne : 0) + (u.solo && !falafel ? P.solo : 0);
 }
 
-function unitPrice() { 
-  return st.item.price + st.units.reduce((s, u) => s + unitExtra(u), 0); 
+function unitPrice() {
+  return st.item.price + st.units.reduce((s, u) => s + unitExtra(u), 0);
 }
 
 function renderUnits() {
@@ -301,10 +314,10 @@ function confirmItem() {
   const line = { itemId: it.id, name: it.name, price: unitPrice(), qty: st.qty, units, multi: units.length > 1, drink, note };
   const key = JSON.stringify([line.itemId, line.price, units, drink, note]);
   const ex = cart.find(l => JSON.stringify([l.itemId, l.price, l.units, l.drink || '', l.note]) === key);
-  
-  if (ex) ex.qty += st.qty; 
+
+  if (ex) ex.qty += st.qty;
   else cart.push(line);
-  
+
   closeOverlay('sheet');
   afterCartChange();
   toast('Añadido al pedido');
@@ -331,7 +344,8 @@ function afterCartChange() {
 }
 
 function refreshBar() {
-  const bar = $('#bar');   const anyOpen = $$('.overlay').some(o => !o.hidden);
+  const bar = $('#bar');
+  const anyOpen = $$('.overlay').some(o => !o.hidden);
   const n = itemCount();
   if (n > 0 && !anyOpen) {
     $('#barQty').textContent = n;
@@ -381,18 +395,22 @@ function renderCart() {
     ? 'Has alcanzado el pedido mínimo'
     : `Añade ${eur(MIN_ORDER - sub)} más para llegar al pedido mínimo de ${eur(MIN_ORDER)}`;
 
-  $$('#payType button').forEach(b => b.classList.toggle('on', b.dataset.v === pay.type));   $$
-('#exactType button').forEach(b => b.classList.toggle('on', b.dataset.v === pay.exact));
-  
+  $$('#payType button').forEach(b => b.classList.toggle('on', b.dataset.v === pay.type));
+  $$('#exactType button').forEach(b => b.classList.toggle('on', b.dataset.v === pay.exact));
+
   const isCash = pay.type === 'efectivo';
   $('#cashBox').hidden = !isCash;
   $('#cardHint').hidden = isCash;
   $('#changeBox').hidden = !isCash || pay.exact !== 'no';
+
+  // --- Cambio dinámico del botón ---
+  const sendBtnSpan = $('#sendBtn').querySelector('span');
+  sendBtnSpan.textContent = isCash ? 'Enviar pedido por WhatsApp' : 'Pagar con tarjeta';
 }
 
 
-/* ---------- 11. ENVÍO DEL PEDIDO (WhatsApp) ---------- */
-function sendOrder() {
+/* ---------- 11. ENVÍO DEL PEDIDO (WhatsApp o Stripe) ---------- */
+async function sendOrder() {
   if (!cart.length) return toast('Tu pedido está vacío');
   const sub = subtotal();
   if (sub < MIN_ORDER) return toast(`Pedido mínimo ${eur(MIN_ORDER)} · faltan ${eur(MIN_ORDER - sub)}`);
@@ -404,20 +422,54 @@ function sendOrder() {
   if (!address) { $('#cAddress').focus(); return toast('Escribe tu dirección'); }
   if (phone.replace(/\D/g, '').length < 9) { $('#cPhone').focus(); return toast('Escribe un teléfono válido'); }
 
+  // Control horario
+  if (!isOpen()) return toast('Lo sentimos, ahora mismo estamos cerrados.');
+
   const total = sub + FEE;
-  let payText;
+
+  /* =========================================
+     PAGO CON TARJETA (STRIPE)
+     ========================================= */
   if (pay.type === 'tarjeta') {
-    payText = 'Tarjeta (el repartidor lleva datáfono)';
-  } else if (pay.exact === 'si') {
+    const btn = $('#sendBtn');
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<span>Redirigiendo al banco...</span>';
+    btn.disabled = true;
+
+    try {
+      save();
+      const response = await fetch(`${API}/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart, sauces, customer: { name, address, phone }, note: $('#cNote').value.trim() })
+      });
+
+      const session = await response.json();
+      if (session.url) {
+        window.location.href = session.url; // Redirige a Stripe
+      } else {
+        throw new Error(session.error || 'No URL returned');
+      }
+    } catch (error) {
+      console.error(error);
+      toast('Error al conectar con la pasarela de pago');
+      btn.innerHTML = originalContent;
+      btn.disabled = false;
+    }
+    return;
+  }
+
+  /* =========================================
+     PAGO EN EFECTIVO (WHATSAPP DIRECTO)
+     ========================================= */
+  let payText;
+  if (pay.exact === 'si') {
     payText = 'Efectivo, importe exacto';
   } else {
     const c = parseFloat($('#cChange').value);
     if (!c || c < total) { $('#cChange').focus(); return toast(`Indica con cuánto pagas (mínimo ${eur(total)})`); }
     payText = `Efectivo, paga con ${eur(c)} (cambio: ${eur(c - total)})`;
   }
-  
-  // ---> AQUÍ ESTÁ EL BLOQUEO AUTOMÁTICO FUERA DE HORARIO <---
-  if (!isOpen()) return toast('Lo sentimos, ahora mismo estamos cerrados.');
 
   const id = Math.random().toString(36).slice(2, 7).toUpperCase();
   const BIG_LINE = '==============================';
@@ -474,7 +526,7 @@ function sendOrder() {
 }
 
 
-/* ---------- 12. EVENTOS Y BOTONES (Bind) ---------- */
+/* ---------- 12. EVENTOS Y BOTONES ---------- */
 function bind() {
   $('#menu').addEventListener('click', e => {
     const card = e.target.closest('[data-id]');
@@ -498,7 +550,7 @@ function bind() {
     const el = document.getElementById(b.dataset.go);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
-  
+
   $('#heroBtn').addEventListener('click', () => $('#novedades').scrollIntoView({ behavior: 'smooth' }));
 
   $('#sheetUnits').addEventListener('click', e => {
@@ -516,30 +568,31 @@ function bind() {
     updateSheetPrice();
   });
 
-$('#drinkList').addEventListener('click', e => {
+  $('#drinkList').addEventListener('click', e => {
     const b = e.target.closest('[data-drink]');
     if (!b) return;
-    
-    // Si la bebida que hace clic ya estaba seleccionada, la desmarcamos (vuelve a la nada)
+
     if (st.drink === b.dataset.drink) {
-      st.drink = null; 
+      st.drink = null;
     } else {
       st.drink = b.dataset.drink;
     }
-    
+
     buzz();
     renderDrinks();
   });
 
   $('#qMinus').addEventListener('click', () => { if (st.qty > 1) { st.qty--; updateSheetPrice(); } });
   $('#qPlus').addEventListener('click', () => { if (st.qty < 20) { st.qty++; updateSheetPrice(); } });
-  $('#addBtn').addEventListener('click', confirmItem);   $$('[data-close]').forEach(b => b.addEventListener('click', () => closeOverlay(b.dataset.close)));
-  $$('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeOverlay(o.id); }));      document.addEventListener('keydown', e => {     if (e.key === 'Escape') $$
-('.overlay').filter(o => !o.hidden).forEach(o => closeOverlay(o.id));
+  $('#addBtn').addEventListener('click', confirmItem);
+  $$('[data-close]').forEach(b => b.addEventListener('click', () => closeOverlay(b.dataset.close)));
+  $$('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeOverlay(o.id); }));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') $$('.overlay').filter(o => !o.hidden).forEach(o => closeOverlay(o.id));
   });
 
   $('#barBtn').addEventListener('click', () => { renderCart(); openOverlay('cart'); $('#bar').classList.remove('show'); });
-  
+
   $('#cartItems').addEventListener('click', e => {
     const b = e.target.closest('button[data-d]');
     if (!b) return;
@@ -549,8 +602,12 @@ $('#drinkList').addEventListener('click', e => {
     buzz();
     afterCartChange();
   });
-  
-  $('#clearBtn').addEventListener('click', () => {     if (confirm('¿Vaciar todo el pedido?')) { cart = []; sauces = { blanca: 0, roja: 0, picante: 0 }; afterCartChange(); }   });      $$('.mini[data-sauce]').forEach(m => m.addEventListener('click', e => {
+
+  $('#clearBtn').addEventListener('click', () => {
+    if (confirm('¿Vaciar todo el pedido?')) { cart = []; sauces = { blanca: 0, roja: 0, picante: 0 }; afterCartChange(); }
+  });
+
+  $$('.mini[data-sauce]').forEach(m => m.addEventListener('click', e => {
     const b = e.target.closest('button[data-d]');
     if (!b) return;
     const k = m.dataset.sauce;
@@ -569,39 +626,37 @@ $('#drinkList').addEventListener('click', e => {
     pay.exact = b.dataset.v; save(); renderCart();
   });
 
-  ['#cName', '#cAddress', '#cPhone'].forEach(s => $(s).addEventListener('input', save));$('#sendBtn').addEventListener('click', sendOrder);
+  ['#cName', '#cAddress', '#cPhone'].forEach(s => $(s).addEventListener('input', save));
+  $('#sendBtn').addEventListener('click', sendOrder);
 }
 
 
-/* ---------- 13. EXTRAS: AÑADIR BEBIDAS DESDE EL CARRITO ---------- */
+/* ---------- 13. EXTRAS: AÑADIR BEBIDAS ---------- */
 function addQuickDrink(name, price, type) {
-    let finalName = name + (type === 'Lata' ? ' (Lata)' : '');
+  let finalName = name + (type === 'Lata' ? ' (Lata)' : '');
+  const ex = cart.find(l => l.name === finalName && !l.units.length && !l.drink);
 
-    // Comprobar si la bebida ya está en el carrito
-    const ex = cart.find(l => l.name === finalName && !l.units.length && !l.drink);
-    
-    if (ex) {
-        ex.qty++; // Si ya la tiene, le sumamos 1 a la cantidad
-    } else {
-        // Si no la tiene, la añadimos nueva
-        cart.push({
-            itemId: 'bebida-' + Date.now(), 
-            name: finalName,
-            price: price,
-            qty: 1,
-            units: [],
-            multi: false,
-            drink: '',
-            note: ''
-        });
-    }
+  if (ex) {
+    ex.qty++;
+  } else {
+    cart.push({
+      itemId: 'bebida-' + finalName,
+      name: finalName,
+      price: price,
+      qty: 1,
+      units: [],
+      multi: false,
+      drink: '',
+      note: ''
+    });
+  }
 
-    toast(name + " añadida");
-    afterCartChange(); // Refresca el carrito al instante
+  toast(name + " añadida");
+  afterCartChange();
 }
 
 
-/* ---------- 14. INICIALIZACIÓN (Arranque de la web) ---------- */
+/* ---------- 14. INICIALIZACIÓN ---------- */
 renderMenu();
 load();
 bind();

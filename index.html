@@ -111,8 +111,8 @@
     <p>Rda. de Outeiro, 224 · 15007 A Coruña</p>
     <p>Todos los días de 13:00 a 16:00 y de 19:00 a 23:30</p>
     <p>881 512 777 · 613 802 925</p>
-    <small>© 2026 Rehman Döner Kebab · Pago en mano: efectivo o tarjeta con datáfono</small>
-  </footer>
+<small>© 2026 Rehman Döner Kebab · Pago: efectivo al repartidor o tarjeta online segura</small>  
+</footer>
 
   <!-- BARRA FLOTANTE DEL CARRITO -->
   <div class="bar" id="bar" hidden>
@@ -166,7 +166,7 @@
       <div class="sheet-head">
         <div>
           <h3 id="cartTitle">Tu pedido</h3>
-          <p>Revisa todo antes de enviarlo por WhatsApp</p>
+          <p>Revisa todo antes de realizar el pedido</p>
         </div>
         <button class="x" data-close="cart" aria-label="Cerrar">&times;</button>
       </div>
@@ -202,7 +202,7 @@
                 <button type="button" class="chip" onclick="addQuickDrink('Fuze Tea Maracuyá', 2.00, 'Lata')">+ Fuze Tea Maracuyá</button>
             </div>
 
-            <!-- Otras Bebidas -->
+            <!-- Otras  Bebidas -->
             <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">Otras Bebidas</div>
             <div class="chips" style="display: flex; flex-wrap: wrap; gap: 8px;">
                 <button type="button" class="chip" onclick="addQuickDrink('Agua 0.5L', 1.00, '')">+ Agua 0.5L (1.00€)</button>
@@ -217,12 +217,12 @@
         </div>
 
         <div class="block">
-          <h4>Método de pago <small>(se paga al repartidor)</small></h4>
+          <h4>Método de pago</h4>
           <div class="seg" id="payType">
             <button class="on" data-v="efectivo">Efectivo</button>
-            <button data-v="tarjeta">Tarjeta</button>
+            <button data-v="tarjeta">Tarjeta Online</button>
           </div>
-          <p class="hint" id="cardHint" hidden>El repartidor llevará el datáfono.</p>
+          <p class="hint" id="cardHint" hidden>Serás redirigido a una pasarela de pago segura. Al finalizar el pago, el pedido se enviará automáticamente a nuestro WhatsApp.</p>
           <div id="cashBox">
             <div class="seg" id="exactType">
               <button class="on" data-v="si">Importe exacto</button>
