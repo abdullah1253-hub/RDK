@@ -480,7 +480,7 @@ const id = Math.random().toString(36).slice(2, 7).toUpperCase();
   const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
-  const W = 42;
+  const W = 52;
   const LINE = '─'.repeat(W);
   const L = [];
 

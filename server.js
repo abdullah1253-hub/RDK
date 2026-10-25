@@ -73,7 +73,7 @@ function priceLine(l) {
 }
 
 function buildTicket(o) {
-  const W = 42;
+  const W = 52;
   const LINE = '─'.repeat(W);
   const L = [];
   const total = r2(o.sub + FEE);
