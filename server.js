@@ -78,13 +78,17 @@ function buildTicket(o) {
   const L = [];
   const total = r2(o.sub + FEE);
 
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid', day: '2-digit', month: '2-digit', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('es-ES', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit' });
+
   L.push(LINE);
   L.push('          REHMAN DÖNER KEBAB          ');
   L.push('  Ronda de Outeiro, 224 - A Coruña    ');
   L.push('    Tel: 881 512 777 / 613 802 925    ');
   L.push(LINE);
   L.push('   *** PAGADO ONLINE (STRIPE) ***     ');
-  L.push('Pedido #' + o.id);
+  L.push('Pedido #' + o.id + ' | ' + dateStr + ' ' + timeStr);
   L.push(LINE);
   L.push('CLIENTE:');
   L.push(o.customer.name);

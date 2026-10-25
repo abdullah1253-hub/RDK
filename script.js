@@ -475,7 +475,11 @@ async function sendOrder() {
     payText = `Efectivo, paga con ${eur(c)} (cambio: ${eur(c - total)})`;
   }
 
-  const id = Math.random().toString(36).slice(2, 7).toUpperCase();
+const id = Math.random().toString(36).slice(2, 7).toUpperCase();
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
   const W = 42;
   const LINE = '─'.repeat(W);
   const L = [];
@@ -486,7 +490,7 @@ async function sendOrder() {
   L.push('    Tel: 881 512 777 / 613 802 925    ');
   L.push(LINE);
   L.push('    *** NUEVO PEDIDO (EFECTIVO) ***   ');
-  L.push('Pedido #' + id);
+  L.push('Pedido #' + id + ' | ' + dateStr + ' ' + timeStr);
   L.push(LINE);
   L.push('CLIENTE:');
   L.push(name);
