@@ -476,54 +476,61 @@ async function sendOrder() {
   }
 
   const id = Math.random().toString(36).slice(2, 7).toUpperCase();
-  const BIG_LINE = '==============================';
+  const W = 42;
+  const LINE = '─'.repeat(W);
   const L = [];
 
-  L.push('*NUEVO PEDIDO · REHMAN DÖNER KEBAB*');
-  L.push(`Pedido #${id}`);
-  L.push(BIG_LINE);
+  L.push(LINE);
+  L.push('          REHMAN DÖNER KEBAB          ');
+  L.push('  Ronda de Outeiro, 224 - A Coruña    ');
+  L.push('    Tel: 881 512 777 / 613 802 925    ');
+  L.push(LINE);
+  L.push('    *** NUEVO PEDIDO (EFECTIVO) ***   ');
+  L.push('Pedido #' + id);
+  L.push(LINE);
+  L.push('CLIENTE:');
+  L.push(name);
+  L.push(address);
+  L.push(phone);
+  L.push(LINE);
+  L.push('PRODUCTOS:');
 
-  L.push('*DATOS DEL CLIENTE*');
-  L.push(`Nombre: ${name}`);
-  L.push(`Dirección: ${address}`);
-  L.push(`Teléfono: ${phone}`);
-  L.push(BIG_LINE);
-
-  L.push('*PRODUCTOS*');
   cart.forEach((l, idx) => {
-    if (idx > 0) L.push(BIG_LINE);
-    L.push(`*${l.qty}x ${l.name}* — ${eur(l.price * l.qty)}`);
+    if (idx > 0) L.push('');
+    L.push(l.qty + 'x ' + l.name + ' - ' + eur(l.price * l.qty));
     l.units.forEach(u => {
       const txt = u.parts.join(' | ');
-      if (txt) L.push(`    • ${l.multi ? u.label + ': ' : ''}${txt}`);
+      if (txt) L.push('   * ' + (l.multi ? u.label + ': ' : '') + txt);
     });
-    if (l.drink) L.push(`    • Bebida: ${l.drink}`);
-    if (l.note) L.push(`    • Nota: ${l.note}`);
+    if (l.drink) L.push('   * Bebida: ' + l.drink);
+    if (l.note) L.push('   * Nota: ' + l.note);
   });
 
   if (sauceCount()) {
-    L.push(BIG_LINE);
-    L.push('*SALSAS EXTRA*');
-    if (sauces.blanca) L.push(`    • ${sauces.blanca}x Salsa blanca`);
-    if (sauces.roja) L.push(`    • ${sauces.roja}x Salsa roja`);
-    if (sauces.picante) L.push(`    • ${sauces.picante}x Salsa picante`);
+    L.push(LINE);
+    if (sauces.blanca) L.push('   * ' + sauces.blanca + 'x Salsa blanca');
+    if (sauces.roja) L.push('   * ' + sauces.roja + 'x Salsa roja');
+    if (sauces.picante) L.push('   * ' + sauces.picante + 'x Salsa picante');
   }
 
-  L.push(BIG_LINE);
-
-  L.push(`Subtotal: ${eur(sub)}`);
-  L.push(`Envío: ${eur(FEE)}`);
-  L.push(`*TOTAL A PAGAR: ${eur(total)}*`);
-  L.push(BIG_LINE);
-  L.push('*MÉTODO DE PAGO*');
+  L.push(LINE);
+  L.push('Subtotal:      ' + eur(sub));
+  L.push('Gastos Envío:  ' + eur(FEE));
+  L.push('TOTAL A PAGAR: ' + eur(total));
+  L.push(LINE);
+  L.push('MÉTODO DE PAGO:');
   L.push(payText);
 
   const gen = $('#cNote').value.trim();
   if (gen) {
-    L.push(BIG_LINE);
-    L.push('*NOTA GENERAL*');
-    L.push(gen);
+    L.push(LINE);
+    L.push('NOTA: ' + gen);
   }
+
+  L.push(LINE);
+  L.push('');
+  L.push('');
+  L.push('');
 
   save();
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(L.join('\n'))}`, '_blank');
