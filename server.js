@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/$/, '');
 const WA_NUMBER = '34613802925';
 const FEE = 2.00;
-const MIN_ORDER = 0.50;
+const MIN_ORDER = 10.00;
 const EXTRA = { queso: 0.50, carne: 1.00, solo: 1.00, salsa: 0.50 };
 const ALLOW_CLOSED = process.env.ALLOW_CLOSED === 'true'; // solo para pruebas
 
@@ -34,6 +34,7 @@ QUICK['Agua 0.5L'] = 1.00;
 QUICK['Coca-Cola 2L'] = 3.00;
 
 /* ---------- Utilidades ---------- */
+const r2 = n => Math.round(n * 100) / 100;
 const eur = n => n.toFixed(2).replace('.', ',') + '€';
 const clean = (s, max = 200) => String(s || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, max);
 
@@ -72,34 +73,60 @@ function priceLine(l) {
 }
 
 function buildTicket(o) {
-  const LINE = '==============================';
+  const W = 42;
+  const LINE = '='.repeat(W);
+  const DASH = '-'.repeat(W);
   const L = [];
-  L.push('*NUEVO PEDIDO PAGADO ONLINE · REHMAN DÖNER KEBAB*');
-  L.push('*(PAGADO CON TARJETA VÍA STRIPE)*');
-  L.push(`Pedido #${o.id}`);
-  L.push(LINE, '*DATOS DEL CLIENTE*');
-  L.push(`Nombre: ${o.customer.name}`, `Dirección: ${o.customer.address}`, `Teléfono: ${o.customer.phone}`);
-  L.push(LINE, '*PRODUCTOS*');
+  const total = r2(o.sub + FEE);
+
+  L.push(LINE);
+  L.push('          REHMAN DÖNER KEBAB          ');
+  L.push('  Ronda de Outeiro, 224 - A Coruña    ');
+  L.push('    Tel: 881 512 777 / 613 802 925    ');
+  L.push(LINE);
+  L.push('   *** PAGADO ONLINE (STRIPE) ***     ');
+  L.push('Pedido #' + o.id);
+  L.push(DASH);
+  L.push('CLIENTE:');
+  L.push(o.customer.name);
+  L.push(o.customer.address);
+  L.push(o.customer.phone);
+  L.push(DASH);
+  L.push('PRODUCTOS:');
+  
   o.lines.forEach((l, i) => {
-    if (i > 0) L.push(LINE);
-    L.push(`*${l.qty}x ${l.name}* — ${eur(l.unit * l.qty)}`);
+    if (i > 0) L.push('');
+    L.push(l.qty + 'x ' + l.name + ' - ' + eur(l.unit * l.qty));
     l.units.forEach(u => {
-      const t = u.parts.join(' | ');
-      if (t) L.push(`    • ${l.multi ? u.label + ': ' : ''}${t}`);
+      const t = Array.isArray(u.parts) ? u.parts.join(' | ') : '';
+      if (t) L.push('   * ' + (l.multi ? u.label + ': ' : '') + t);
     });
-    if (l.drink) L.push(`    • Bebida: ${l.drink}`);
-    if (l.note) L.push(`    • Nota: ${l.note}`);
+    if (l.drink) L.push('   * Bebida: ' + l.drink);
+    if (l.note)  L.push('   * Nota: ' + l.note);
   });
-  const sc = o.sauces;
-  if (sc.blanca + sc.roja + sc.picante > 0) {
-    L.push(LINE, '*SALSAS EXTRA*');
-    if (sc.blanca) L.push(`    • ${sc.blanca}x Salsa blanca`);
-    if (sc.roja) L.push(`    • ${sc.roja}x Salsa roja`);
-    if (sc.picante) L.push(`    • ${sc.picante}x Salsa picante`);
+
+  const sc = o.sauces || {};
+  const sauceTotal = (sc.blanca || 0) + (sc.roja || 0) + (sc.picante || 0);
+  if (sauceTotal > 0) {
+    L.push(DASH);
+    if (sc.blanca) L.push('   * ' + sc.blanca + 'x Salsa blanca');
+    if (sc.roja) L.push('   * ' + sc.roja + 'x Salsa roja');
+    if (sc.picante) L.push('   * ' + sc.picante + 'x Salsa picante');
   }
-  L.push(LINE, `Subtotal: ${eur(o.sub)}`, `Envío: ${eur(FEE)}`, `*TOTAL PAGADO: ${eur(o.sub + FEE)}*`);
-  if (o.note) L.push(LINE, '*NOTA GENERAL*', o.note);
-  L.push(LINE, '*ESTADO:* ✅ PAGADO ONLINE VÍA STRIPE');
+
+  L.push(DASH);
+  L.push('Subtotal:      ' + eur(o.sub));
+  L.push('Gastos Envío:  ' + eur(FEE));
+  L.push('TOTAL A PAGAR: ' + eur(total));
+  L.push(DASH);
+  L.push('MÉTODO DE PAGO:');
+  L.push('Tarjeta Online (Pagado)');
+  
+  if (o.note) {
+    L.push(DASH);
+    L.push('NOTA: ' + o.note);
+  }
+  L.push(LINE);
   return L.join('\n');
 }
 

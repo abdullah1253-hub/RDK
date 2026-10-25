@@ -4,7 +4,7 @@
 
 /* ---------- 1. CONFIGURACIÓN Y VARIABLES GLOBALES ---------- */
 const FEE = 2.00; // Precio del envío
-const MIN_ORDER = 0.50; // Pedido mínimo
+const MIN_ORDER = 10.00; // Pedido mínimo
 const WA_NUMBER = '34613802925'; // Teléfono de WhatsApp
 const P = { queso: 0.50, carne: 1.00, solo: 1.00, salsa: 0.50 }; // Precios de extras
 const STORE = 'rehman-kebab-v3'; // Nombre del almacenamiento local
@@ -98,9 +98,13 @@ function openState() {
   if (cur) return { open: true, text: `Abierto ahora · cierra a las ${fmtH(cur[1])}` };
   const next = HOURS.find(([a]) => now < a) || HOURS[0];
   return { open: false, text: `Cerrado ahora · abrimos a las ${fmtH(next[0])}` };
-}
+}// ShopTime
 
 const isOpen = () => FORCE_OPEN || openState().open;
+//() => openState().open;
+
+
+//const isOpen = () => openState().open;
 
 function updateStatus() {
   const s = $('#status'), o = openState();
