@@ -87,6 +87,7 @@ function buildTicket(o) {
   L.push('  Ronda de Outeiro, 224 - A Coruña    ');
   L.push('    Tel: 881 512 777 / 613 802 925    ');
   L.push(LINE);
+  L.push('        *** NUEVO PEDIDO  ***         ');
   L.push('   *** PAGADO ONLINE (STRIPE) ***     ');
   L.push('Pedido #' + o.id + ' | ' + dateStr + ' ' + timeStr);
   L.push(LINE);
