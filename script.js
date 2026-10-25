@@ -4,7 +4,7 @@
 
 /* ---------- 1. CONFIGURACIÓN Y VARIABLES GLOBALES ---------- */
 const FEE = 2.00; // Precio del envío
-const MIN_ORDER = 10.00; // Pedido mínimo
+const MIN_ORDER = 0.50; // Pedido mínimo
 const WA_NUMBER = '34613802925'; // Teléfono de WhatsApp
 const P = { queso: 0.50, carne: 1.00, solo: 1.00, salsa: 0.50 }; // Precios de extras
 const STORE = 'rehman-kebab-v3'; // Nombre del almacenamiento local
