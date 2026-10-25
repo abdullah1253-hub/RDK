@@ -74,8 +74,7 @@ function priceLine(l) {
 
 function buildTicket(o) {
   const W = 42;
-  const LINE = '='.repeat(W);
-  const DASH = '-'.repeat(W);
+  const LINE = '─'.repeat(W);
   const L = [];
   const total = r2(o.sub + FEE);
 
@@ -86,12 +85,12 @@ function buildTicket(o) {
   L.push(LINE);
   L.push('   *** PAGADO ONLINE (STRIPE) ***     ');
   L.push('Pedido #' + o.id);
-  L.push(DASH);
+  L.push(LINE);
   L.push('CLIENTE:');
   L.push(o.customer.name);
   L.push(o.customer.address);
   L.push(o.customer.phone);
-  L.push(DASH);
+  L.push(LINE);
   L.push('PRODUCTOS:');
   
   o.lines.forEach((l, i) => {
@@ -108,25 +107,30 @@ function buildTicket(o) {
   const sc = o.sauces || {};
   const sauceTotal = (sc.blanca || 0) + (sc.roja || 0) + (sc.picante || 0);
   if (sauceTotal > 0) {
-    L.push(DASH);
+    L.push(LINE);
     if (sc.blanca) L.push('   * ' + sc.blanca + 'x Salsa blanca');
     if (sc.roja) L.push('   * ' + sc.roja + 'x Salsa roja');
     if (sc.picante) L.push('   * ' + sc.picante + 'x Salsa picante');
   }
 
-  L.push(DASH);
+  L.push(LINE);
   L.push('Subtotal:      ' + eur(o.sub));
   L.push('Gastos Envío:  ' + eur(FEE));
   L.push('TOTAL A PAGAR: ' + eur(total));
-  L.push(DASH);
+  L.push(LINE);
   L.push('MÉTODO DE PAGO:');
   L.push('Tarjeta Online (Pagado)');
   
   if (o.note) {
-    L.push(DASH);
+    L.push(LINE);
     L.push('NOTA: ' + o.note);
   }
+  
   L.push(LINE);
+  L.push('');
+  L.push('');
+  L.push('');
+
   return L.join('\n');
 }
 
