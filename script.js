@@ -13,7 +13,7 @@ const STORE = 'rehman-kebab-v3'; // Nombre del almacenamiento local
 const API = (location.protocol === 'file:') ? 'http://localhost:3000' : '';
 
 // MODO PRUEBAS: true = siempre abierto. Pon false antes de publicar.
-const FORCE_OPEN = true;
+const FORCE_OPEN = false;
 
 const $ = (s, r = document) => r.querySelector(s);  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const eur = n => n.toFixed(2).replace('.', ',') + '€';
@@ -98,13 +98,14 @@ function openState() {
   if (cur) return { open: true, text: `Abierto ahora · cierra a las ${fmtH(cur[1])}` };
   const next = HOURS.find(([a]) => now < a) || HOURS[0];
   return { open: false, text: `Cerrado ahora · abrimos a las ${fmtH(next[0])}` };
-}// ShopTime
+}
+// ShopTime
 
-const isOpen = () => FORCE_OPEN || openState().open;
+// const isOpen = () => FORCE_OPEN || openState().open;
 //() => openState().open;
 
 
-//const isOpen = () => openState().open;
+const isOpen = () => openState().open;
 
 function updateStatus() {
   const s = $('#status'), o = openState();
