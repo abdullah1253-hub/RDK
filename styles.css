@@ -59,8 +59,6 @@ button, .card, .feature, .pill, .chip, .extra { position: relative; overflow: hi
 /* Portada */
 .hero{position:relative;min-height:78vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
 .hero-bg{position:absolute;inset:0;background:
-  linear-gradient(180deg,rgba(16,14,12,.55) 0%,rgba(16,14,12,.78) 60%,var(--bg) 100%),
-  url('fotos-menu/fondo-portada.jpg') center/cover,
   radial-gradient(900px 500px at 75% 20%,#3a2414,transparent 70%),var(--bg2)}
 .hero-inner{position:relative;padding-top:60px;padding-bottom:70px}
 .eyebrow{font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;color:var(--brass);margin-bottom:22px}
